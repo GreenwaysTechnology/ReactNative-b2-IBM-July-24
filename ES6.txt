@@ -1,0 +1,209 @@
+			 ES 6 - Java script
+.....................................................................................
+
+What is Javascript?
+
+ Java script is object based, functional style programming language.
+
+What is Object based
+
+
+Object Orientation:
+..................
+
+ Object orientation is style of architecting apps.
+
+IS there is any other styles?
+
+1.Producure oriented style
+2.Object oriented style
+3.Functional programming style
+
+Object oriented Programming:  
+  Collection of object oriented principles.
+
+OO Principles:
+..............
+1.Abstraction - Describes how to collect and analysis req -class,interface
+2.Encaspulation - Tells how to share code and how to not share code
+3.Modularity - How to break the code into files and folders - namepaces,packages
+4.Hierachy - how to establish realtionship among classes - is-a(inheritance),has-a(dependency)
+5.Typing - Data Types - Strong typing,weak Typing- Polymorphism (only for                         polymorphism)
+ 
+  Strong Typing:
+    int a =10;
+   here a's type is verified during compile time
+    a="hello" 
+   here compiler catches error.
+  The type of variable is verified during compile time
+
+ var a =10
+   here a's type is not verifed during compile time rather runtime.
+  These types are called weak typed.
+.................
+6.Concurrency -  Processing represenation - threads
+7.Persistancy - Storage
+
+C#,java,kotlin,swift is object oriented language.
+
+if any programming language follows oo 1 to 5 principles , those languages called as "Object oriented Language".
+
+if any programming language does not follow oo 1 to 5 principles completly or partially , those languages called as "Object based Language".
+
+Functional Programming:
+  It is also style of programming..
+
+SOme programming languages follows single style - c++ - object oriented language
+Some programming languages follows multiple style - hybrid language.
+
+JS is hybrid language.
+  It supports both object based and functional language.
+
+Javascript language runtime Environment:
+........................................
+
+Life cycle of programming
+
+java
+1.source code  - hello.java -english
+2.compiled code - hello.class - assembly
+...............................Dev Cycle
+3.Excutable code  -----Runtime - jvm
+
+JS:
+1.source code - hello.js 
+    |
+  compiled --->
+
+JS Runtime:
+  It is program which is responsible for loading,parsing,compiling,running js code.
+
+Where is js runtime?
+
+  Every browser has embeded js runtime.
+
+Chrome-V8
+Edge - Chakra
+Firefox - Spider Monkey
+ 
+ Js engine is available outside browser too, which is called "Node.js"
+ 
+JS engine is available in mobile -via React Native -Hermes
+...................................................................................
+			 language
+...................................................................................
+
+Versions:
+ Js language was created by Netscap communications on 1995.
+
+ After javascript language created, the language was submitted to standard body called "ECMA" international.
+
+After that Js was called as ECMA Script or ES.
+
+After submission, the language was standarized and released by committee.
+
+1.ES 1.0 -->1996
+2.ES 3.0 -->1999
+3.ES 4.0 -->2006
+4.ES 5.0 --->2007
+5.ES 6.0 --->2012-2015
+6.ES 7.0 ----->2016
+ still growing but up to es 7 is stable and in production....
+etc.....
+
+Javascript learning path(ES6):
+..............................
+1.Language fundamentals
+2.Functions 
+3.Objects
+
+1.Language fundamentals
+ ->Variables
+ ->Literals
+ ->Type Systems
+
+
+1.Language fundamentals:
+
+variables,type system,values(literals)
+
+var,let,const
+
+literals:(values)
+
+  literal   - type
+....................
+  string    - string
+  number    - number
+  boolean   - boolean
+  undfined   - undefined
+  NaN       - number
+  Infinity  - number
+  function  - function
+  object    - object
+  null      - object
+
+type system;
+
+1.string
+2.number
+3.object
+4.boolean
+5.undefined
+6.function
+.....................................................................................
+			    
+Software setup:
+1.node.js
+2.vs code
+3.Jdk 17
+4.Android Studio
+.....................................................................................
+
+Project Setup:
+..............
+
+G:\IBM\2024\July\ReactNative-b2>mkdir es6apps
+G:\IBM\2024\July\ReactNative-b2>cd es6apps
+
+G:\IBM\2024\July\ReactNative-b2\es6apps>mkdir src
+
+G:\IBM\2024\July\ReactNative-b2\es6apps>code .
+
+Helloworld
+src/index.js
+console.log('Hello')
+
+How to test?
+ we are going to test using browser, so we need html file.
+
+
+es6apps
+  | 
+  src
+ |
+ index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ES6 apps</title>
+</head>
+<body>
+    <h1>ES6 apps</h1>
+    <script src="src/index.js"></script>
+</body>
+</html>
+
+How to run this file?
+
+ in order to we web server.
+ vs code offers embeded webserver , that needs to be installed.
+
+vs code--->Extension---live server---->click --->install-->restart vs code.
+
+After installing live server, right click on html, lanuch server along with index.html
+
+After lanuching, right click on browser,click inspect, go to console.
+
