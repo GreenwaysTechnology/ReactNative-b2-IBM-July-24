@@ -486,16 +486,6 @@ let add = function (a = 0, b = 10) {
 }
 console.log(add(10,10))
 console.log(add())
-....................................................................................
-			Higher order functions
-....................................................................................
-
-1.Passing function as parameter
-2.Returning function 
-
-
-1.Passing function as parameter
-....................................................................................
 			Higher order functions
 ....................................................................................
 
@@ -786,8 +776,416 @@ let login = (userName, password, resolve, reject) => {
 //     console.log(err)
 // })
 login('admin', 'admin', status => console.log(status), err => console.log(err))
+		.....................................................................................
+				  Objects
+.....................................................................................			
+Objects can be created in two ways
+
+1.constructors pattern
+   es 5 functions 
+   es 6 classes
+2.literal pattern
+
+//class declaration
+
+class Employee {
+    //instance variables
+    id = 1
+    name = 'Subramanian'
+
+    //methods
+    calculateSalary() {
+        return 100
+    }
+    calculateTax = () => {
+        return 10
+    }
+}
+
+//create instance
+
+//let is keyword
+//emp is reference variable
+//new is operator
+//Employee() is constructor call
+let emp = new Employee()
+console.log(emp)
+
+console.log(`id ${emp.id}`)
+console.log(`name ${emp.id}`)
+console.log(`salary ${emp.calculateSalary()}`)
+console.log(`Tax ${emp.calculateTax()}`)
+................................................................................
+
+State Initalization
+
+1.inside class 
+2.inside constructor
+3.outside class- after object creation.
+
+//class declaration
+
+class Employee {
+    //inside class
+    id = 1
+    name = 'Subramanian'
+
+    //methods
+    calculateSalary() {
+        return 100
+    }
+    calculateTax = () => {
+        return 10
+    }
+}
+
+//create instance
+
+//let is keyword
+//emp is reference variable
+//new is operator
+//Employee() is constructor call
+let emp = new Employee()
+console.log(emp)
+
+console.log(`id ${emp.id}`)
+console.log(`name ${emp.id}`)
+console.log(`salary ${emp.calculateSalary()}`)
+console.log(`Tax ${emp.calculateTax()}`)
 
 
+constructor parameter:
+
+class Employee {
+    id
+    name
+    constructor(id = 1, name = 'Subramanian') {
+        this.id = id
+        this.name = name
+    }
+
+    //methods
+    calculateSalary() {
+        return 100
+    }
+    calculateTax = () => {
+        return 10
+    }
+}
+let emp = new Employee()
+console.log(emp)
+
+console.log(`id ${emp.id}`)
+console.log(`name ${emp.id}`)
+console.log(`salary ${emp.calculateSalary()}`)
+console.log(`Tax ${emp.calculateTax()}`)
+
+
+emp= new Employee(2,'Ram')
+console.log(emp)
+
+console.log(`id ${emp.id}`)
+console.log(`name ${emp.id}`)
+console.log(`salary ${emp.calculateSalary()}`)
+console.log(`Tax ${emp.calculateTax()}`)
+
+after object creation:
+
+class Employee {
+    id
+    name
+    constructor(id = 1, name = 'Subramanian') {
+        this.id = id
+        this.name = name
+    }
+
+    //methods
+    calculateSalary() {
+        return 100
+    }
+    calculateTax = () => {
+        return 10
+    }
+}
+let emp = new Employee()
+console.log(emp)
+
+console.log(`id ${emp.id}`)
+console.log(`name ${emp.name}`)
+console.log(`salary ${emp.calculateSalary()}`)
+console.log(`Tax ${emp.calculateTax()}`)
+
+
+emp = new Employee(2, 'Ram')
+console.log(emp)
+
+console.log(`id ${emp.id}`)
+console.log(`name ${emp.name}`)
+console.log(`salary ${emp.calculateSalary()}`)
+console.log(`Tax ${emp.calculateTax()}`)
+
+emp = new Employee()
+
+emp.id = 90
+emp.name = 'John'
+
+console.log(`id ${emp.id}`)
+console.log(`name ${emp.name}`)
+console.log(`salary ${emp.calculateSalary()}`)
+console.log(`Tax ${emp.calculateTax()}`)
+.....................................................................................
+			 Hierachy
+.....................................................................................
+
+1.HAS-A 
+2.IS-A -  inheritance
+
+Has-a:
+class Address {
+    city
+    constructor(city = 'city') {
+        this.city = city
+    }
+}
+class Employee {
+    id
+    name
+    address
+    constructor(id = 0, name = 'name', address = new Address('city')) {
+        this.id = id
+        this.name = name
+        this.address = address
+    }
+}
+let emp = new Employee(1, 'Subramaian', new Address('coimbatore'))
+console.log(`id ${emp.id}`)
+console.log(`name ${emp.name}`)
+console.log(`city ${emp.address.city}`)
+
+IS-A inheritance
+................
+class Account {
+    constructor() {
+        console.log('account')
+
+    }
+    deposit() {
+        return 100
+    }
+}
+class SavingsAccount extends Account {
+    constructor() {
+        super()
+        console.log('savings account')
+        
+    }
+    deposit() {
+        return 1000 + super.deposit()
+    }
+}
+let sb = new SavingsAccount()
+console.log(sb.deposit())
+
+Note:
+ mixin
+ Typescript - interfaces
+....................................................................................
+				literal 
+....................................................................................
+
+No class,function
+
+
+syntax:
+
+let variable = {
+  key:value,
+  key:value
+}
+
+//
+let employee = {
+    id: 1,
+    name: 'Subramanian'
+}
+console.log(`Id ${employee.id}`)
+console.log(`Name ${employee.name}`)
+
+has-a/nested object
+let employee = {
+    id: 1,
+    name: 'Subramanian',
+    //has-a
+    address: {
+        city: 'Coimbatore'
+    }
+}
+console.log(`Id ${employee.id}`)
+console.log(`Name ${employee.name}`)
+console.log(`Name ${employee.address.city}`)
+
+Javascripts supports lot of built in objects
+.............................................
+
+1.Browser related objects
+ window,document,history,sessionStorage,localStorage etc...
+
+2.Plain objects/POJOs
+
+1.Object - Super Most parent object
+2.Array - To implement ds in js - List
+3.JSON  - Json Parser Object
+4.String
+5.Number
+6.Boolean
+7.Math
+etc....
+
+Array:
+......
+  Array is object which holds any type of data including other arrays.
+Since array object has many methods.
+
+//array can hold any values- numbers,strings,objects, even another array
+
+let names = ['subu', 'ram', 'chandan']
+
+names.forEach(item => console.log(item))
+
+let users = [
+    { id: 1, name: 'a' },
+    { id: 2, name: 'b' },
+    { id: 3, name: 'c' },
+    { id: 4, name: 'd' },
+]
+users.forEach(item => console.log(item.id, item.name))
+
+const res = users.map(item => {
+    return item.name.toUpperCase()
+})
+console.log(res)
+
+const result = users.filter(item => item.name === 'a')
+console.log(result)
+
+const user = users.find(item => item.name === 'a')
+console.log(user)
+
+const savedUser = users.concat({ id: 4, name: 'abc' })
+console.log(savedUser)
+
+Reference:
+https://www.w3schools.com/jsref/jsref_find.asp
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
+..................................................................................
+			Object Destructuring
+...................................................................................
+//object destructuring: es 6 feature
+
+// function printEmployee(emp) {
+//     console.log(`Id : ${emp.id}`)
+//     console.log(`Name : ${emp.name}`)
+//     console.log(`City : ${emp.address.city}`)
+// }
+
+// function printEmployee(emp) {
+//     //destructure
+//     const { id, name, address } = emp
+//     console.log(`Id : ${id}`)
+//     console.log(`Name : ${name}`)
+//     console.log(`City : ${address.city}`)
+// }
+
+
+// function printEmployee(emp) {
+//     //destructure
+//     const { id, name, address: { city } } = emp
+//     console.log(`Id : ${id}`)
+//     console.log(`Name : ${name}`)
+//     console.log(`City : ${city}`)
+// }
+
+// function printEmployee({ id, name, address: { city } }) {
+//     console.log(`Id : ${id}`)
+//     console.log(`Name : ${name}`)
+//     console.log(`City : ${city}`)
+// }
+const printEmployee = ({ id, name, address: { city } }) => {
+    console.log(`Id : ${id}`)
+    console.log(`Name : ${name}`)
+    console.log(`City : ${city}`)
+}
+let employee = {
+    id: 1,
+    name: 'Subramanian',
+    address: {
+        city: 'Coimbatore'
+    }
+
+}
+printEmployee(employee)
+////////////////////////////////////////////////////////////////////////////////////////
+
+//return object and destructuring
+
+// function getStock() {
+//     return {
+//         id: 1,
+//         symbol: 'google',
+//         qty: 100,
+//         price: 1000
+//     }
+// }
+// console.log(getStock())
+
+
+//dynamic object properties
+// function getStock(id = 1, symbol = 'google', qty = 0, price = 0) {
+//     return {
+//         id: id,
+//         symbol: symbol,
+//         qty: qty,
+//         price: price
+//     }
+// }
+// console.log(getStock(2, 'meta', 3, 3445))
+// console.log(getStock())
+
+//apply descturing syntax
+// function getStock(id = 1, symbol = 'google', qty = 0, price = 0) {
+//     //left:right is same
+//     //key:value is same
+//     //you can descture, make it as one
+//     return {
+//         id,
+//         symbol,
+//         qty,
+//         price
+//     }
+// }
+// console.log(getStock(2, 'meta', 3, 3445))
+// console.log(getStock())
+
+
+// const getStock = (id = 1, symbol = 'google', qty = 0, price = 0) => {
+//     return {
+//         id,
+//         symbol,
+//         qty,
+//         price
+//     }
+// }
+
+const getStock = (id = 1, symbol = 'google', qty = 0, price = 0) => ({
+    id,
+    symbol,
+    qty,
+    price
+})
+
+
+console.log(getStock(2, 'meta', 3, 3445))
+console.log(getStock())
 
 
 
