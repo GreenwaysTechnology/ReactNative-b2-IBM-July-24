@@ -1,0 +1,917 @@
+			 React/React.js
+.....................................................................................
+
+What is react?
+   A JavaScript library for building user interfaces.
+
+User interface apps are
+
+1.Browser apps
+2.Mobile apps
+3.Desktop apps
+4.Tv apps
+5.etc...
+
+React is used to build
+ browser,mobile/tab ,tv.
+
+.....................................................................................
+			 Design patterns in UI Development
+.....................................................................................
+1.MVC
+2.MVVM
+3.Flux
+
+React/React Native uses "Flux" design pattern
+
+Flux is new design pattern to design ui invented by facebook.
+ https://facebookarchive.github.io/flux/
+
+https://facebookarchive.github.io/flux/docs/in-depth-overview
+
+In Flux pattern react is "View/Ui/Presentation" Layer.
+
+In Flux Pattern data is changed via "One directional Flow", You(UI) cant change data directly.
+.....................................................................................
+			 React and  Browser UI Development 
+.....................................................................................
+
+React in browser uses "HTML" as primary programming language for representing UI.
+React in Mobile uses "Mobile specific language" for representing UI.
+....................................................................................
+			React and HTML
+....................................................................................
+
+DOM: - Document Object Model
+............................
+What is DOM?
+   DOM is specification  released by W3c organgization,in order to build web apps for browsers.
+https://www.w3.org/TR/1998/WD-DOM-19980416/		
+
+In order to understand DOM fully , we need to understand HTML very deeply.
+
+Programming language stages:
+...........................
+
+1.source code
+
+hello.java
+hello.c
+hello.cpp
+hello.py
+hello.js
+
+ ----->compiled ?
+
+to generate assembly instructions
+
+|
+2.compiled code - assembly instruction
+ hello.class
+ hello.obj
+|
+3.Execute
+ final output
+
+
+HTML:
+
+1.HTML IS PL? 
+  - YES
+2.HTML Is compiled 
+  -YES
+  HTML source code is compiled into assembly. 
+
+3.HTML is executed?
+  Yes
+
+source code:
+
+index.html
+
+<html>
+<head></head>
+<title><title>
+<body>
+  <div>
+     <h1>Welcome</h1>
+  </div>
+</body>
+</html>
+
+|
+-------------------Browser
+loader---LOAD Code into browser
+ |
+  from file: or http:
+ |
+Parser :
+   Parser is special compiler which converts source into lexcial tree(string tree)
+
+body
+  div
+     h1
+        Welcome 
+     h1
+  div
+body
+
+ Complier-Compilation : Convert this into assembly
+|
+body -load xxx
+  div
+     h1
+        Welcome 
+     h1
+  div
+body
+|
+.....................................................................................
+				Runtime 
+.....................................................................................
+HTML Execution engine : Request Os ,to allocate memory :Runtime
+
+-LinkedList
+body -Node
+ div -Node
+     h1 -Node
+        Welcome -Node
+     h1
+  div
+body
+
+
+ Linking the Nodes: Tree
+body  -Node
+  |
+  div -Node
+    |
+     h1 -Node
+      |
+        Welcome -Node
+        |
+     h1
+  div
+|
+Layout/Paint Engine: will convert nodes into pxs : final output
+
+
+sourcecode--->parsed code---compiled code---linked list---tree--->drawn on screen(ui)
+
+
+.....................................................................................
+         Static web pages: htmls are displayed into browser.
+.....................................................................................
+In 1996,Netscap communication,Started an RND project called "How to manipulate the tree"
+
+Tree is written in c language,then we need another c program to communicate.
+
+But NETSCAP decided not to use C pl.
+
+Netscap wanted to put java like implementation inside browser to manipulate "Tree".
+
+			That is birth of javascript
+
+
+How to access nodes from javascript engine?
+  
+One spec was published ,As per that spec
+ "Document Object Model"
+    -How to represent document(elements/nodes) in object oriented way.->DOM
+
+ "Documents can be reprsented as Objects" : Object oriented Document Programming.
+
+.....................................................................................
+
+............................................................................................
+
+How dom works?
+
+index.html           Browser runtime(C program)         Javascript Engine
+<h1>Hello</h1>       h1-Node                           h1- Object
+			Hello-Node			 Hello Object Property
+
+
+
+                 Every Html ELEMENT Inside Browser is "C Program"
+
+	       Every Html ELEMENT Inside javascript engine is "Object"
+
+
+javascript developer ---->uses api --->to communicate Object---->js engine---->browser engine.	
+
+Architecture tech stack for dom programming
+
+
+Plain JS
+			 Application(dom) -plain js
+			     |
+			 Javascript Engine
+			      |
+			  Browser Engine
+
+Framework/lib
+			 Application(JQuery)
+			     |
+		       ---------------------------
+			  JQuery Engine	------javascript programming		
+                       -------------------------------
+			      |
+			 Javascript Engine
+			      |
+			  Browser Engine
+
+
+
+
+Angular
+			 Application(Angular)
+			     |
+		       ---------------------------
+			  Angular Engine : Renderer(Ng2) Renderer2(Ng4,5),Ivy(6,7)		              -------------------------------
+			      |
+			 Javascript Engine
+			      |
+			  Browser Engine
+
+React
+
+
+		       Application(React)
+			     |
+		       ---------------------------
+	             React Engine :React fiber-->React 16 on wards		
+                       -------------------------------
+			      |
+			 Javascript Engine
+			      |
+			  Browser Engine
+.....................................................................................
+
+React can be used to build application for 
+
+.........................................
+1.browsers : Desktop
+2.Mobile Apps : React Native
+
+face book is working on many futures projects related to react
+
+3.React VR : Virtual Reality.
+4.React Car : For car applications
+5.React TV (React Native)  : React for TV.
+6.React IOT : any devices
+
+We are going to learn react web for browsers.
+
+React core modules:
+
+react.js      => Core module
+.................................
+
+react-dom.js  => Browser
+react-native.js => Mobile
+.....................................................................................				React and ui building
+...................................................................................
+
+React uses  a small programming language to describe UI called "JSX"
+
+As we discussed React is used in many app dev like browser,mobile,tv apps.
+
+Each app type(browser,mobile) has its own JSX syntax(with respect to markup)...
+
+Browser jsx uses HTML as language
+Mobile Jsx uses "Mobile markup" as language.
+
+-----------------------------------------------------------------------------
+ Markup layer             |  React Core Engine    | Render Engine   | Target
+-----------------------------------------------------------------------------
+
+HTML Markup---------------|  Object Tree(V.DOM)   | ReactDom.render |  Browser
+
+Mobile Markup-------------|  Object Tree          |ReactNative.render| Mobile 						   /Tabs/TV
+
+..............
+VR Markup---------------  |  Object Tree          |VR.render         |VR devices
+
+IOT Markup--------------- |  Object Tree          | IOT.render       |IOT Devices   
+
+.....................................................................................
+			 React Project Setup
+.....................................................................................
+
+React teams offers tool set to create react projects
+
+
+G:\IBM\2024\July\ReactNative-b2>npm create vite@latest
+Need to install the following packages:
+create-vite@5.4.0
+Ok to proceed? (y) y
+
+
+> npx
+> create-vite
+
+√ Project name: ... react-core
+√ Select a framework: » React
+√ Select a variant: » JavaScript
+
+Scaffolding project in G:\IBM\2024\July\ReactNative-b2\react-core...
+
+Done. Now run:
+
+  cd react-core
+  npm install
+  npm run dev
+
+....................................................................................
+			How to create dom element using react
+.....................................................................................
+
+Exploring the project structure:
+
+package.json
+{
+  "name": "my-react",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.34.2",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.7",
+    "vite": "^5.3.1"
+  }
+}
+
+index.html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React</title>
+  </head>
+  <body>
+    <div id="root">
+	
+   </div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+
+
+src/
+ main.jsx
+
+It is entry file/main program where we start.
+
+//create dom element using plain js and how to attach on existing dom tree
+
+function createElement() {
+    const Heading = document.createElement('h1')
+    Heading.innerHTML = 'Hello React!'
+    //attach Heading with existing div
+    const rootElement = document.getElementById('root')
+    rootElement.appendChild(Heading)
+}
+createElement()
+Using react:
+
+import React from "react";
+import ReactDOM from 'react-dom/client'
+
+//CREATE DOM ELEMENT USING JSX
+const Heading = <h1>Hello React!!</h1>// document.createElement('h1')
+
+const rootElement = document.getElementById('root')
+ReactDOM.createRoot(rootElement).render(Heading)
+
+.....................................................................................
+	JSX - java script and XML - langugage to create User interfaces
+.....................................................................................
+
+React uses declarative dom programing using a mini language invented by facebook : JSX
+
+JSX : - javascript and xml
+
+ 1.PL language built by face book to write user interfaces.
+ 2.JSX is collection of html markup and javascript.
+ 3.JSX is dsl and declarative.
+ 4.Every device has its own jsx language syntax.
+ 5.Browsers jsx can't be used for building mobile application.
+
+
+Since jsx  is a language cant be executed on browser /mobile directly.
+..................................................................................
+
+JSX compilation model:
+
+                   layout.js / layout.jsx
+		       |
+		    compiler - babel.js 
+			|
+		    plain js code
+			|-----------------------Dev cycle
+	----------------------------------------- -- Excution cycles Starts
+  Runtime : React Engine  compiled code feed into react engine
+			|
+		   Excute compiled js code : function calls
+			|
+	     create virtual Object tree (in browser V-dom)
+		        |
+	Render Engine ; will convert react object tree into js dom object tree/mobile
+			|
+		   Flush the tree into target
+			|
+	--------------------------------------------
+        |      |
+     Browser  Mobile
+
+
+JSX is used to create dom elements/ Mobile elements
+
+Every DOM element is object.
+
+.....................................................................................
+				Component
+.................................................................................
+
+What is Component ?
+  Component is Object , Coined by MS in 1989.
+
+According to ms, Component is object which has state(data),behaviour(methods) + User interface(Visual).
+ eg:Button,TextBox,Grid,Menu,MenuBar,Layout,Table.....
+
+Component === Widget ==== Object ==== DOM
+
+Like Object tree(DOM Tree), In React we can create "Component" Tree.
+
+
+      Node===DOM Object====Component
+       h1     HTMLHeading   Heading
+
+"React apps are made out of components. A Component is piece of the UI that has its own logic and appearance, A Component can be small as a button or as large as an entire Page"
+
+
+.....................................................................................
+
+			Component Creational patterns
+...................................................................................
+
+
+1.variable pattern
+2.functional pattern
+3.es 6 class pattern
+
+Components can be created any one or mixed way  style.
+"functional Pattern" is more popular and recommended pattern....
+
+
+.....................................................................................
+
+			Component Creational patterns
+...................................................................................
+
+
+1.variable pattern
+2.functional pattern
+3.es 6 class pattern
+
+Components can be created any one or mixed way  style.
+"functional Pattern" is more popular and recommended pattern....
+
+
+1.Variable Pattern
+
+
+import React from "react";
+import ReactDOM from 'react-dom/client'
+
+//Heading is just variable
+//<h1>Hello React!!</h1> is Component
+const Heading = <h1>Hello React!!</h1>// document.createElement('h1')
+
+const rootElement = document.getElementById('root')
+ReactDOM.createRoot(rootElement).render(Heading)
+
+
+
+Functional Pattern:
+...................
+import ReactDOM from 'react-dom/client'
+
+function Heading() {
+    return <h1>
+        Hello React!
+    </h1>
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(Heading())
+
+Here we are calling reader(Heading())
+
+Heading() - calling function like this is not recommended - imperative programming
+
+Heading() - function call can be converted html like syntax that means tag tax syntax. -<Heading></Heading>
+
+
+import ReactDOM from 'react-dom/client'
+
+function Heading() {
+    return <h1>
+        Hello React!
+    </h1>
+}
+
+// ReactDOM.createRoot(document.getElementById('root')).render(Heading())
+ReactDOM.createRoot(document.getElementById('root')).render(<Heading></Heading>)
+
+Arrow functions and components:
+...............................
+
+import ReactDOM from 'react-dom/client'
+
+// const Heading = () => {
+//     return <h1>
+//         Hello React!
+//     </h1>
+// }
+
+const Heading = () => <h1>
+    Hello React!
+</h1>
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Heading></Heading>)
+...................................................................................
+			   class pattern
+
+Now a days class pattern is almost deprecated, only functional pattern are popular..
+
+
+import ReactDOM from 'react-dom/client'
+import React  from 'react'
+
+class Heading extends React.Component {
+
+    //override render method from React.Component
+    render(){
+        return <h1>
+            Hello React!!!
+        </h1>
+    }
+
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Heading></Heading>)
+
+.....................................................................................
+.....................................................................................
+			Exploring JSX
+.....................................................................................
+
+JS-Javascript
+X -  XML
+
+Since HTML parser is weak, but when y write react code, we need consistent code generation.
+
+So that react team, developed compiler follows basic xml rules.
+
+
+Basic XML  rules:
+
+1.every opened element must be closed
+  <h1>Hello</h1>
+  <Welcome></Welcome>
+ some elements may not have closing tag
+  <img /> : image element has no child elements : self closing.
+
+
+eg:
+import ReactDOM from 'react-dom/client'
+
+const Welcome = ()=> {
+
+    return <h1> Hello
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Welcome></Welcome>)
+
+This code generates error.
+................
+
+The code which has no error.
+
+import ReactDOM from 'react-dom/client'
+
+const Welcome = ()=> {
+
+    // return <h1> Hello
+    return <h1> Hello</h1>
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Welcome/>)
+.....................................................................................
+
+2. In xml you must have one single root element.
+  all elements must be organized under single root element.
+
+   <h1>Welcome to IBM</h1>
+   <p>Hello</p>
+
+In html what can be root element
+ <div>,<span>,all html 5 layout elements header,footer,section,aside...
+
+			
+const Welcome = ()=>{
+    return <div>
+        <h1>Hello
+    </div>
+}
+This code will throw error.
+
+
+import ReactDOM from 'react-dom/client'
+
+const Welcome = () => {
+
+    return <div>
+        <h1>Welcome to IBM</h1>
+        <p>Hello</p>
+    </div>
+
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Welcome />)
+....................................................................................
+			  Fragments
+....................................................................................
+
+Some times i dont want root element but still i need to escape from compiler error
+   -Fragements
+
+Fragements are used to wrap elements invisible way.
+
+Suppose if i dont want any root element, then we can use Fragement.
+
+Fragements are used to escape from compiler.
+
+
+Syntax:
+
+1. <React.Fragment>
+
+ </React.Fragement>
+
+2. <Fragment>
+
+ </Fragement>
+
+
+3.<>
+
+ </>
+
+
+import ReactDOM from 'react-dom/client'
+// import React, { Fragment } from 'react'
+
+// const Welcome = () => {
+//     return <React.Fragment>
+//         <h1>Welcome to IBM</h1>
+//         <p>Hello</p>
+//     </React.Fragment>
+
+// }
+
+
+// const Welcome = () => {
+//     return <Fragment>
+//         <h1>Welcome to IBM</h1>
+//         <p>Hello</p>
+//     </Fragment>
+
+// }
+const Welcome = () => {
+    return <>
+        <h1>Welcome to IBM</h1>
+        <p>Hello</p>
+    </>
+
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Welcome />)
+
+
+
+
+Component Name :
+
+import ReactDOM from 'react-dom/client'
+
+const heading = () => {
+
+    return <>
+        <h1>Welcome to IBM</h1>
+        <p>Hello</p>
+    </>
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(<heading/>)
+
+
+
+chunk-373CG7ZK.js?v=98769346:519 Warning: The tag <heading> is unrecognized in this browser. If you meant to render a React component, start its name with an uppercase letter.
+    at heading
+
+..................................................................................
+			..................................................................................
+			Component Composition
+..................................................................................
+
+I have ui called gallery, inside Gallary i want to display Profile information.
+
+Level - 1:
+import ReactDOM from 'react-dom/client'
+
+const Gallery = () => {
+    return <div>
+        <h1>Scientists / Computer</h1>
+        <h3>Alan Turing</h3>
+        <h4>Born : 23 June 1912</h4>
+        <h4>Died : 7 June 1954 (aged 41)
+            Wilmslow, Cheshire, England
+        </h4>
+    </div>
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Gallery />)
+
+Here scientists information is tightly coupled with Gallery.
+
+import ReactDOM from 'react-dom/client'
+
+const ProfileHeading = () => <h1>Scientists / Computer</h1>
+
+const Profile = () => {
+    return <>
+        <ProfileHeading />
+        <h3>Alan Turing</h3>
+        <h4>Born : 23 June 1912</h4>
+        <h4>Died : 7 June 1954 (aged 41)
+            Wilmslow, Cheshire, England
+        </h4>
+    </>
+}
+
+const Gallery = () => {
+    return <div>
+        <Profile />
+    </div>
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Gallery />)
+.....................................................................................
+.....................................................................................
+.....................................................................................
+			 React Dev tool
+.....................................................................................
+
+It is tool part of browser as plugin, used to insepect the structure of app.
+https://react.dev/learn/react-developer-tools
+
+.....................................................................................
+.....................................................................................
+		  Component Composition and Modularity
+.....................................................................................
+Every Component will go into separate folders and files, through es 6 modules you can 
+https://legacy.reactjs.org/docs/faq-structure.html
+
+import export components..
+
+src/profile/Profile.jsx
+
+import { ProfileHeading } from "./ProfileHeading"
+
+const Profile = () => {
+    return <>
+        <ProfileHeading />
+        <h3>Alan Turing</h3>
+        <h4>Born : 23 June 1912</h4>
+        <h4>Died : 7 June 1954 (aged 41)
+            Wilmslow, Cheshire, England
+        </h4>
+    </>
+}
+export { Profile }
+
+
+src/gallery/Gallery.jsx
+
+import { Profile } from "../profile/Profile"
+
+const Gallery = () => {
+    return <div>
+        <Profile />
+    </div>
+}
+export { Gallery } 
+
+
+src/App.jsx
+import { Gallery } from "./gallery/Gallery"
+
+function App() {
+
+  return (
+    <>
+      <Gallery />
+    </>
+  )
+}
+
+export default App
+
+
+src/main.jsx
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.jsx'
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)
+..................................................................................
+			Barrel Export
+..................................................................................
+
+src/welcome/
+   Hello.jsx
+   Hai.jsx
+   Greeter.jsx
+
+when you import these files where ever, we have to import 
+		 
+import { Hello } from "./welcome/Hello"
+import { Hai } from "./welcome/Hai"
+import { Greeter } from "./welcome/Greeter"
+
+Barrel export is nothing simplifiying export and import...
+ Using Barrel export you dont need to use fileName when import
+ Using Barrel export you dont need to use multiple import statement.
+
+How to use barrel export?
+
+Rule 1:
+ inside folder create "index.js"
+ src/profile/index.js 
+
+Rule 2:
+ inside index.js
+  
+ import {Profile} './Profile'
+
+ export {Profile}
+
+Rule 3: 
+  inside another file like gallary.jsx
+
+  import {Profile} './profile'
+
+
+
+
+
+
+
+
+
+
+
+
+
