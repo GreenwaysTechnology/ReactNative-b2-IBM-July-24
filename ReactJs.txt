@@ -903,10 +903,305 @@ Rule 3:
 
   import {Profile} './profile'
 
+.....................................................................................
+			 Data binding
+
+
+Data can be string,number,boolean,object,array
+
+{Variable} | {expression} | {value}
+
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+
+const Profile = () => {
+
+  const name = 'Alan Turing'
+  const birthdate = '23 June 1912'
+
+  return <div>
+    <h1>{name}</h1>
+    <h2>born:{birthdate}</h2>
+  </div>
+}
+
+const App = () => {
+  return <>
+    <Profile />
+  </>
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)
+..................................................................................
+			   Data Binding Patterns
+
+1.property binding aka props pattern
+2.State binding aka state pattern.
+
+
+props Pattern:
+
+When you think about component , you should thing about resuablity..
+
+How to create component with resuablity?
+
+ Component should be configurable, Component should accept data from outside.
+
+if data is passed to the component from outside(From another component -Parent),
+This pattern is called props pattern /Property pattern.
+
+Since Component is function, function can take args (which is called property).
+
+
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+
+const Profile = (name,birthdate) => {
+    return <div>
+        <h1>{name}</h1>
+        <h2>born:{birthdate}</h2>
+    </div>
+}
+
+const App = () => {
+    return <>
+        {/* <Profile /> */}
+        {Profile('Alan Turing','23 June 1912')}
+        {Profile('Alonzo Church','June 14, 1903')}
+    </>
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+
+props:
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+
+//props = {name:'x',birthdate:''}
+const Profile = (props) => {
+    return <div>
+        <h1>{props.name}</h1>
+        <h2>born:{props.birthdate}</h2>
+    </div>
+}
+
+const App = () => {
+    return <>
+        <Profile name='Alan Turing' birthdate={'23 June 1912'}  />
+        <Profile name='Alonzo Church' birthdate={'June 14, 1903'} />
+        {/* {Profile('Alan Turing','23 June 1912')}
+        {Profile('Alonzo Church','June 14, 1903')} */}
+    </>
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+
+Passing more data:
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+
+//props = {name:'x',birthdate:''}
+const Profile = (props) => {
+    return <div>
+        <h1>{props.name}</h1>
+        <h2>born:{props.birthdate}</h2>
+        <h2>Alive: {props.isAlive ? "Alive" : "No More"}</h2>
+        <h3>Rating: {props.rating}</h3>
+    </div>
+}
+
+const App = () => {
+    const isAlive = false
+
+    return <>
+        {/* {name:'',birthdate:} */}
+        <Profile name='Alan Turing' birthdate={'23 June 1912'} isAlive={false} rating={9} />
+        <Profile name='Alonzo Church' birthdate={'June 14, 1903'} isAlive={isAlive} rating={8} />
+        {/* {Profile('Alan Turing','23 June 1912')}
+        {Profile('Alonzo Church','June 14, 1903')} */}
+    </>
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+
+How to break down into another component and pass data?
+
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+
+const Avatar = props => <img src={props.src} alt="Name" width={100} height={100} />
+
+const Profile = (props) => {
+    return <div>
+        <Avatar src={props.src} />
+        <h1>{props.name}</h1>
+        <h2>born:{props.birthdate}</h2>
+        <h2>Alive: {props.isAlive ? "Alive" : "No More"}</h2>
+        <h3>Rating: {props.rating}</h3>
+    </div>
+}
+
+const App = () => {
+    const isAlive = false
+    const imageSrc = 'https://i.imgur.com/1bX5QH6.jpg'
+    return <>
+        {/* {name:'',birthdate:} */}
+        <Profile src={imageSrc} name='Alan Turing' birthdate={'23 June 1912'} isAlive={false} rating={9} />
+        <Profile src={imageSrc} name='Alonzo Church' birthdate={'June 14, 1903'} isAlive={isAlive} rating={8} />
+        {/* {Profile('Alan Turing','23 June 1912')}
+        {Profile('Alonzo Church','June 14, 1903')} */}
+    </>
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+..................................................................................
+			  Props and Object descturing
+..............................................................................
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+
+const Avatar = ({ src }) => <img src={src} alt="Name" width={100} height={100} />
+
+// const Profile = (props) => {
+//     const { src, name, isAlive, rating,birthdate } = props
+//     return <div>
+//         <Avatar src={src} />
+//         <h1>{name}</h1>
+//         <h2>born:{birthdate}</h2>
+//         <h2>Alive: {isAlive ? "Alive" : "No More"}</h2>
+//         <h3>Rating: {rating}</h3>
+//     </div>
+// }
+
+const Profile = ({ src, name, isAlive, rating, birthdate }) => <div>
+    <Avatar src={src} />
+    <h1>{name}</h1>
+    <h2>born:{birthdate}</h2>
+    <h2>Alive: {isAlive ? "Alive" : "No More"}</h2>
+    <h3>Rating: {rating}</h3>
+</div>
 
 
 
+const App = () => {
+    const isAlive = false
+    const imageSrc = 'https://i.imgur.com/1bX5QH6.jpg'
+    return <>
+        <Profile src={imageSrc} name='Alan Turing' birthdate={'23 June 1912'} isAlive={false} rating={9} />
+        <Profile src={imageSrc} name='Alonzo Church' birthdate={'June 14, 1903'} isAlive={isAlive} rating={8} />
+    </>
+}
 
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+....................................................................................
+			 Default values and Props
+....................................................................................
+
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+
+const Avatar = ({ src }) => <img src={src} alt="Name" width={100} height={100} />
+
+const Profile = ({ src = 'https://i.imgur.com/1bX5QH6.jpg', name = 'Your Name', isAlive = false, rating = 0, birthdate = '01 Jan 1950' }) => <div>
+    <Avatar src={src} />
+    <h1>{name}</h1>
+    <h2>born:{birthdate}</h2>
+    <h2>Alive: {isAlive ? "Alive" : "No More"}</h2>
+    <h3>Rating: {rating}</h3>
+</div>
+
+//old way:
+// Profile.defaultProps = {
+//     src: "https://i.imgur.com/1bX5QH6.jpg",
+//     name: 'Your Name',
+//     birthdate: '01 Jan 1950',
+//     isAlive: false,
+//     rating:0
+// }
+
+
+const App = () => {
+    const isAlive = false
+    const imageSrc = 'https://i.imgur.com/1bX5QH6.jpg'
+    return <>
+        {/* <Profile src={imageSrc} name='Alan Turing' birthdate={'23 June 1912'} isAlive={false} rating={9} />
+        <Profile src={imageSrc} name='Alonzo Church' birthdate={'June 14, 1903'} isAlive={isAlive} rating={8} /> */}
+        <Profile />
+        <Profile src={imageSrc} name='Alan Turing' birthdate={'23 June 1912'} isAlive={false} rating={9} />
+    </>
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+...................................................................................
+		Forwarding props with JSX Spread Notation
+.....................................................................................
+import ReactDOM from 'react-dom/client'
+import React from 'react'
+
+const Avatar = ({ title = "", src = 'https://i.imgur.com/1bX5QH6.jpg', name = 'Your Name', isAlive = false, rating = 0, birthdate = '01 Jan 1950' }) => <>
+    <h1>{title}</h1>
+    <img src={src} alt="Name" width={100} height={100} />
+    <h1>{name}</h1>
+    <h2>born:{birthdate}</h2>
+    <h2>Alive: {isAlive ? "Alive" : "No More"}</h2>
+    <h3>Rating: {rating}</h3>
+</>
+const Profile = props => <div>
+    {/* <Avatar src={props.src} name={props.name} isAlive={props.isAlive} birthdate={props.birthdate} rating={props.rating} /> */}
+    {/* We can pass props simply using spread notation (...) */}
+    <Avatar {...props} title="Most Popular People" />
+</div>
+
+const App = () => {
+    const isAlive = false
+    const imageSrc = 'https://i.imgur.com/1bX5QH6.jpg'
+    return <>
+        <Profile />
+        <Profile src={imageSrc} name='Alan Turing' birthdate={'23 June 1912'} isAlive={false} rating={9} />
+    </>
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
 
 
 
