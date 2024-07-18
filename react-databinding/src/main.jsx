@@ -1,22 +1,17 @@
-import ReactDOM from 'react-dom/client'
 import React from 'react'
-import { PRODUCTS } from './mock-data/product'
+import ReactDOM from 'react-dom/client'
 import './index.css'
+import { PRODUCTS } from './mock-data/product'
 
 const ProductList = props => {
 
     const { products } = props
-
-    const filteredProducts = products.filter(product => {
-        return product.price > 50
-    })
-
     return <div>
         {
-            filteredProducts.map(product => {
-                return <section key={product.id} className="card" >
-                    <h1 style={styles.heading}>{product.id}</h1>
-                    <h3 style={{color:'green'}}>{product.title}</h3>
+            products.map(product => {
+                return <section key={product.id}>
+                    <h1>{product.id}</h1>
+                    <h3>{product.title}</h3>
                     <div>
                         {product.images.map((img, index) => {
                             return <img key={index} src={img} height={100} width={100} alt='img' />
@@ -29,24 +24,42 @@ const ProductList = props => {
     </div>
 }
 
-//style object
-const styles = {
-    heading: {
-        color: 'blue',
-        borderRadius: 8,
-        border: 1,
-        boxShadow:"10px 20px 30px blue"
-    }
+const Page = ({ children }) => {
+    return <div>
+        {children}
+    </div>
 }
-
-
-
-const App = () => {
-
+const Header = (props) => {
     return <>
-        <ProductList products={PRODUCTS} />
+        <>{props.children}</>
+        <hr />
     </>
 }
+const Footer = () => {
+    return <h1>Footer</h1>
+}
+const Layout = (props) => {
+    return <div>
+        {props.children}
+    </div>
+}
+
+const App = () => {
+    return <>
+        <Layout>
+            {/* Passing these components as prop */}
+            <Header>
+                <h1>IBM</h1>
+            </Header>
+            <Page>
+                <ProductList products={PRODUCTS} />
+            </Page>
+            <Footer />
+        </Layout>
+    </>
+
+}
+
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -54,3 +67,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <App />
     </React.StrictMode>,
 )
+

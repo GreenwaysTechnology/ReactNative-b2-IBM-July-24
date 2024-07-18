@@ -1411,6 +1411,376 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <App />
     </React.StrictMode>,
 )
+....................................................................................
+....................................................................................
+			Conditional Rendering
+....................................................................................
+How to introduce if ...else and also tenary operator in jsx?
+
+Your components will often need to display different things depending on different conditions.
+
+In React, you can conditionally render jsx using javascript syntax like if statement ,&& and ?: operator..
+
+Returning different JSX(Component) depending on condition.
+
+
+Use case : using if..else how to render components
+
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import './index.css'
+
+const todoList = [{
+    id: 1,
+    name: 'learn react',
+    status: true
+},
+{
+    id: 2,
+    name: 'Learn next',
+    status: false
+},
+{
+    id: 3,
+    name: 'learn es',
+    status: true
+},
+{
+    id: 4,
+    name: 'learn Angular',
+    status: false
+},
+{
+    id: 5,
+    name: 'learn React Native',
+    status: false
+}
+
+]
+
+const Item = props => {
+    const { name, status } = props.todo
+    //using if condition
+    if (status) {
+        return <li>{name} ✔</li>
+    } else {
+        return <li>{name} X </li>
+    }
+}
+const TodoList = props => {
+    return <>
+        <ul>
+            {
+                props.todos.map(todo => {
+                    return <>
+                        <Item todo={todo} />
+                    </>
+                })
+            }
+        </ul>
+    </>
+}
+const App = () => {
+    return <>
+        <TodoList todos={todoList} />
+    </>
+
+}
+
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+
+Use case: COnditional rendering using Tenary Operator
+
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import './index.css'
+
+const todoList = [{
+    id: 1,
+    name: 'learn react',
+    status: true
+},
+{
+    id: 2,
+    name: 'Learn next',
+    status: false
+},
+{
+    id: 3,
+    name: 'learn es',
+    status: true
+},
+{
+    id: 4,
+    name: 'learn Angular',
+    status: false
+},
+{
+    id: 5,
+    name: 'learn React Native',
+    status: false
+}
+
+]
+
+// const Item = props => {
+//     const { name, status } = props.todo
+//     //using Tenary Operator
+//     return status ? <li>{name} ✔</li> : <li>{name} X </li>
+// }
+
+const Item = ({ todo: { name, status } }) => status ? <li>{name} ✔</li> : <li>{name} X </li>
+
+const TodoList = props => {
+    return <>
+        <ul>
+            {
+                props.todos.map(todo => {
+                    return <>
+                        <Item todo={todo} />
+                    </>
+                })
+            }
+        </ul>
+    </>
+}
+const App = () => {
+    return <>
+        <TodoList todos={todoList} />
+    </>
+
+}
+
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+
+Use case: Conditional Rendering using && Operator:
+
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import './index.css'
+
+const todoList = [{
+    id: 1,
+    name: 'learn react',
+    status: true
+},
+{
+    id: 2,
+    name: 'Learn next',
+    status: false
+},
+{
+    id: 3,
+    name: 'learn es',
+    status: true
+},
+{
+    id: 4,
+    name: 'learn Angular',
+    status: false
+},
+{
+    id: 5,
+    name: 'learn React Native',
+    status: false
+}
+
+]
+
+
+// const Item = ({ todo: { name, status } }) => status ? <li>{name} ✔</li> : <li>{name} X </li>
+
+const Item = ({ todo: { name, status } }) => <li> {name} {status && '✔'}</li>
+
+const TodoList = props => {
+    return <>
+        <ul>
+            {
+                props.todos.map(todo => {
+                    return <>
+                        <Item todo={todo} />
+                    </>
+                })
+            }
+        </ul>
+    </>
+}
+const App = () => {
+    return <>
+        <TodoList todos={todoList} />
+    </>
+
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+.....................................................................................
+				What can be prop
+.....................................................................................
+
+1.Prop can be data
+2.Prop can another component or element
+..
+3.Prop can be function
+4.Prop can be state(dynamic prop)
+
+
+
+1.Prop can be another component or element.
+
+How to render component
+
+ <Grid></Grid> -  Grid can have children: passing prop
+ <Grid/> -  Grid has no children
+ 
+Parent-Child Relation ship:
+
+cont A = ()=>{
+  return <B/>
+}
+Parent-Child Relation ship:
+ via props
+
+<Layout> -parent
+	<Page>-child
+		<Header> -child
+		   <Logo> -child
+
+		   </Image>
+		</Header>
+	</Page>
+</Layout>  
+
+.....................................................................................
+			Component as Prop
+
+.....................................................................................
+
+Use case : Without component as prop.
+
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import './index.css'
+
+const Page = () => {
+    return <h1>Page</h1>
+}
+const Header = () => {
+    return <h1>Header</h1>
+}
+const Footer = () => {
+    return <h1>Footer</h1>
+}
+const Layout = () => {
+    return <div>
+        <Header />
+        <Page />
+        <Footer />
+    </div>
+}
+
+const App = () => {
+    return <>
+        <Layout />
+    </>
+
+}
+
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+
+Use case : with Props:
+......................
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import './index.css'
+import { PRODUCTS } from './mock-data/product'
+
+const ProductList = props => {
+
+    const { products } = props
+    return <div>
+        {
+            products.map(product => {
+                return <section key={product.id}>
+                    <h1>{product.id}</h1>
+                    <h3>{product.title}</h3>
+                    <div>
+                        {product.images.map((img, index) => {
+                            return <img key={index} src={img} height={100} width={100} alt='img' />
+                        })}
+                    </div>
+                    <h4>Price : {product.price}</h4>
+                </section>
+            })
+        }
+    </div>
+}
+
+const Page = ({ children }) => {
+    return <div>
+        {children}
+    </div>
+}
+const Header = (props) => {
+    return <>
+        <>{props.children}</>
+        <hr />
+    </>
+}
+const Footer = () => {
+    return <h1>Footer</h1>
+}
+const Layout = (props) => {
+    return <div>
+        {props.children}
+    </div>
+}
+
+const App = () => {
+    return <>
+        <Layout>
+            {/* Passing these components as prop */}
+            <Header>
+                <h1>IBM</h1>
+            </Header>
+            <Page>
+                <ProductList products={PRODUCTS} />
+            </Page>
+            <Footer />
+        </Layout>
+    </>
+
+}
+
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
 
 
 
