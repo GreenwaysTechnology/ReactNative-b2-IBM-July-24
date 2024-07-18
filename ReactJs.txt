@@ -1202,6 +1202,222 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <App />
     </React.StrictMode>,
 )
+.....................................................................................
+			  List Rendering
+.....................................................................................
+
+
+Simple List:
+import ReactDOM from 'react-dom/client'
+import React from 'react'
+
+
+const List = props => {
+
+   const { names } = props
+    return <>
+        <ul>
+            {names.map(name => {
+                return <li>{name}</li>
+            })}
+        </ul>
+    </>
+}
+
+
+
+const App = () => {
+    const names = ['Subramanian', 'Murugan', 'Chandrasekar', 'Percy', 'Alan Turing']
+    return <>
+        <List names={names} />
+    </>
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+
+Complex List:
+
+import ReactDOM from 'react-dom/client'
+import React from 'react'
+import { PRODUCTS } from './mock-data/product'
+
+const ProductList = props => {
+
+    const { products } = props
+    return <div>
+        {
+            products.map(product => {
+                return <section key={product.id}>
+                    <h1>{product.id}</h1>
+                    <h3>{product.title}</h3>
+                    <div>
+                        {product.images.map((img,index) => {
+                            return <img key={index} src={img} height={100} width={100} alt='img' />
+                        })}
+                    </div>
+                <h4>Price : {product.price}</h4>
+                </section>
+            })
+        }
+    </div>
+}
+
+
+
+const App = () => {
+    return <>
+        <ProductList products={PRODUCTS} />
+    </>
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+...................................................................................
+				Filtering data
+
+import ReactDOM from 'react-dom/client'
+import React from 'react'
+import { PRODUCTS } from './mock-data/product'
+
+const ProductList = props => {
+
+    const { products } = props
+
+    const filteredProducts = products.filter(product => {
+        return product.price > 50
+    })
+
+    return <div>
+        {
+            filteredProducts.map(product => {
+                return <section key={product.id}>
+                    <h1>{product.id}</h1>
+                    <h3>{product.title}</h3>
+                    <div>
+                        {product.images.map((img, index) => {
+                            return <img key={index} src={img} height={100} width={100} alt='img' />
+                        })}
+                    </div>
+                    <h4>Price : {product.price}</h4>
+                </section>
+            })
+        }
+    </div>
+}
+
+
+
+const App = () => {
+    return <>
+        <ProductList products={PRODUCTS} />
+    </>
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+.....................................................................................
+				Styling
+.....................................................................................
+CSS 
+
+What is CSS?
+ language - Styling language - DSL and declarative
+ to design web pages
+
+
+using css language directly -  css selectors
+<h1 class="selector">
+
+inline style
+<h1 style="color:red">
+ -static css
+
+using css via javascript
+  - dynamic css
+
+<h1 id="heading">hello</h1>
+
+let heading= document.getElementById("heading")
+heading.style.color='red'
+//text-align: center;
+heading.style.textAlign='center'
+
+import ReactDOM from 'react-dom/client'
+import React from 'react'
+import { PRODUCTS } from './mock-data/product'
+import './index.css'
+
+const ProductList = props => {
+
+    const { products } = props
+
+    const filteredProducts = products.filter(product => {
+        return product.price > 50
+    })
+
+    return <div>
+        {
+            filteredProducts.map(product => {
+                return <section key={product.id} className="card" >
+                    <h1 style={styles.heading}>{product.id}</h1>
+                    <h3 style={{color:'green'}}>{product.title}</h3>
+                    <div>
+                        {product.images.map((img, index) => {
+                            return <img key={index} src={img} height={100} width={100} alt='img' />
+                        })}
+                    </div>
+                    <h4>Price : {product.price}</h4>
+                </section>
+            })
+        }
+    </div>
+}
+
+//style object
+const styles = {
+    heading: {
+        color: 'blue',
+        borderRadius: 8,
+        border: 1,
+        boxShadow:"10px 20px 30px blue"
+    }
+}
+
+
+
+const App = () => {
+
+    return <>
+        <ProductList products={PRODUCTS} />
+    </>
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+
+
+
+
+
+
+
 
 
 
