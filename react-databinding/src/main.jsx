@@ -1,62 +1,58 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import { PRODUCTS } from './mock-data/product'
+import { produce } from 'immer'
 
-const ProductList = props => {
+class Review extends React.Component {
 
-    const { products } = props
-    return <div>
-        {
-            products.map(product => {
-                return <section key={product.id}>
-                    <h1>{product.id}</h1>
-                    <h3>{product.title}</h3>
-                    <div>
-                        {product.images.map((img, index) => {
-                            return <img key={index} src={img} height={100} width={100} alt='img' />
-                        })}
-                    </div>
-                    <h4>Price : {product.price}</h4>
-                </section>
-            })
+    //nested state
+    state = {
+        movie: {
+            name: ' Atlas',
+            like: 0,
+            dislike: 0
+        },
+        actor: {
+            name: 'Jennifer Lopez'
         }
-    </div>
+    }
+    onLike = () => {
+        this.setState(prevState => {
+            return produce(prevState, (draft) => {
+                draft.movie.like += 1
+            })
+        })
+    }
+    onDislike = () => {
+        this.setState(prevState => {
+            return produce(prevState, (draft) => {
+                draft.movie.dislike += 1
+            })
+        })
+    }
+    render() {
+        return <div>
+            {/* state as prop and function as prop */}
+            <ReviewDashboard  {...this.state} onLike={this.onLike} onDislike={this.onDislike} />
+        </div>
+    }
 }
 
-const Page = ({ children }) => {
-    return <div>
-        {children}
-    </div>
-}
-const Header = (props) => {
+const ReviewDashboard = ({ movie: { name, like, dislike }, actor, onLike, onDislike }) => {
     return <>
-        <>{props.children}</>
-        <hr />
+        <h1>Movie Reviews</h1>
+        <h2>Name: {name} </h2>
+        <h2>Actresses {actor.name}</h2>
+        <h3>Like : {like} Dislike {dislike}</h3>
+        <button onClick={onLike}>Like</button>
+        <button onClick={onDislike}>Dislike</button>
     </>
-}
-const Footer = () => {
-    return <h1>Footer</h1>
-}
-const Layout = (props) => {
-    return <div>
-        {props.children}
-    </div>
 }
 
 const App = () => {
-    return <>
-        <Layout>
-            {/* Passing these components as prop */}
-            <Header>
-                <h1>IBM</h1>
-            </Header>
-            <Page>
-                <ProductList products={PRODUCTS} />
-            </Page>
-            <Footer />
-        </Layout>
-    </>
+    return <div>
+        <Review />
+    </div>
 
 }
 

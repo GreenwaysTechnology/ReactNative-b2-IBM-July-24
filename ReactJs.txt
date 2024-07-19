@@ -1781,33 +1781,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <App />
     </React.StrictMode>,
 )
-.....................................................................................
-			  State
-....................................................................................
-
-...................................................................................
-			   State Pattern
-		       (Dynamic User Interface)
-			 (Event Handling)
-....................................................................................
-
-What is state?
-  State is another way of representing data in React.
-
-As of we have seen data is not changing or updating...
-
-How to introduce State?
-
-There are two ways
-
-1.class pattern 
-   It is legacy way of representing state and Managining state
-   It is not recommended..
-
-2.Function pattern
-    It is modern way of representing state
-    State is represented via "Hook".
-
 ..................................................................................
 ...................................................................................
 			   State Pattern
@@ -2510,8 +2483,356 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </React.StrictMode>,
 )
 .....................................................................................
+.....................................................................................
+			Multiple State and Inline Event Listener
+.....................................................................................
+
+Note :
+ if want to more state variables, that has to be enclosed within single object only
+
+ state = {
+  ....
+ }
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+
+class Review extends React.Component {
+
+    state = {
+        like: 10,
+        dislike: 10
+    }
+    onLike = () => {
+        this.setState(function (previousState) {
+            console.log('Previous State ', previousState)
+            return { ...previousState, like: previousState.like + 1 }
+        })
+    }
+    render() {
+        console.log('current state', this.state)
+        return <div>
+            <h1>Review Component</h1>
+            <h5>Like {this.state.like} Dislike {this.state.dislike}</h5>
+            <button onClick={this.onLike}>😁</button>
+            {/* Inline listener */}
+            <button onClick={() => {
+                this.setState(function (previousState) {
+                    console.log('Previous State ', previousState)
+                    return { ...previousState, dislike: previousState.dislike + 1 }
+                })
+            }}>😫</button>
+
+        </div>
+    }
+}
 
 
+const App = () => {
+    return <>
+        <Review></Review>
+    </>
+}
+
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />
+);
+.....................................................................................
+.....................................................................................
+			Complex State :Nested State
+
+			   
+state= {
+   house:{
+     name:'RavenClaw',
+     points:10
+   }
+}
+
+I need to increase the points By two..
+
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css'
+
+class HouseRating extends React.Component {
+    state = {
+        house: {
+            name: 'RavenClaw',
+            points: 10
+        }
+    }
+    onIncreasePointsByTwo = () => {
+        this.setState((prveState)=>{
+            return {
+                ...prveState,  //level -0 copy
+                 house: {
+                    ...prveState.house, // level-1 copy : copy all properties within house 
+                    points: prveState.house.points+ 2
+                 }
+            }
+        })
+    }
+
+    render() {
+        return <div>
+            <h1>House Rating Component</h1>
+            <h3>House Name : {this.state.house.name}</h3>
+            <h3>Points : {this.state.house.points}</h3>
+            <button onClick={this.onIncreasePointsByTwo}>+</button>
+        </div>
+    }
+}
+
+const App = () => {
+    return <>
+        <HouseRating />
+    </>
+}
+
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />
+);
+
+.....................................................................................
+				Deep Nesting
+.....................................................................................
+
+Assigment:
+state = {
+  customer: {
+    id:1,
+    name:'Subramanian'
+    contact: {
+	address: {
+	    city:'Chennai'
+	},
+	communcation:{ 
+           mobileNo:'9000000'
+	}
+    }
+  }
+
+}
+
+How to update mobileNo - 834343434
+.....................................................................................
+		      Complxity of Immutable Objects 
+				 and 
+			How to solve  them using 
+			     immer.js
+.....................................................................................
+What is immer?
+  immer is simple js lib, which helps to write complex immutable code in "mutable way" like regular javascript way.
+
+immutable syntax to update object property:
+
+    state = {
+        house: {
+            name: 'RavenClaw',
+            points: 10
+        }
+    }
+
+     return {
+                ...prevState, //level -0 copy
+                house: {
+                    ...prevState.house, // level-1 copy
+                    points: prevState.house.points + 2
+                }
+        }
+
+js syntax:
+
+    state = {
+        house: {
+            name: 'RavenClaw',
+            points: 10
+        }
+    }
+
+update state:
+
+state.house.points +=2
+
+immer is lib which takes care of writing immutable code on behalf of us, developer writes mutable code, immer converts into immutable code.
+
+Immer core concept:
+
+immer provides a function called "produce"
+
+produce(state,(draft)=>{
+  draft.house.points +=2
+})
+
+Getting started:
+
+steps:
+
+1.install immer lib
+
+npm i immer
+
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { produce } from 'immer';
+import './index.css'
+
+class HouseRating extends React.Component {
+
+    state = {
+        house: {
+            name: 'RavenClaw',
+            points: 10
+        }
+    }
+    onIncreasePointsByTwo = () => {
+        this.setState((prevState) => {
+            return produce(prevState, (draft) => {
+                draft.house.points += 2
+            })
+
+        })
+    }
+    render() {
+        return <div>
+            <h1>House Rating Component</h1>
+            <h3>House Name : {this.state.house.name}</h3>
+            <h3>Points : {this.state.house.points}</h3>
+            <button onClick={this.onIncreasePointsByTwo}>Rate</button>
+        </div>
+    }
+}
+
+
+const App = () => {
+    return <>
+        <HouseRating />
+    </>
+}
+
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { produce } from 'immer';
+import './index.css'
+
+class HouseRating extends React.Component {
+
+    state = {
+        house: {
+            name: 'RavenClaw',
+            points: 10
+        }
+    }
+    onIncreasePointsByTwo = () => {
+        this.setState((prevState) => {
+            return produce(prevState, (draft) => {
+                draft.house.points += 2
+            })
+
+        })
+    }
+    render() {
+        return <>
+            {/* here state as prop(dynamic prop) and function as prop */}
+            <HouseRatingDashBoard {...this.state} onIncrement={this.onIncreasePointsByTwo} />
+        </>
+    }
+}
+
+const HouseRatingDashBoard = props => {
+    console.log
+    return <div>
+        <h1>House Rating Component</h1>
+        <h3>House Name : {props.house.name}</h3>
+        <h3>Points : {props.house.points}</h3>
+        <button onClick={props.onIncrement}>Rate</button> 
+    </div>
+}
+
+
+const App = () => {
+    return <>
+        <HouseRating />
+    </>
+}
+
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+.....................................................................................
+			State as prop, function as Prop
+.
+
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import './index.css'
+import { produce } from 'immer'
+
+class Review extends React.Component {
+
+    //nested state
+    state = {
+        movie: {
+            name: ' Atlas',
+            like: 0,
+            dislike: 0
+        },
+        actor: {
+            name: 'Jennifer Lopez'
+        }
+    }
+    onLike = () => {
+        this.setState(prevState => {
+            return produce(prevState, (draft) => {
+                draft.movie.like += 1
+            })
+        })
+    }
+    onDislike = () => {
+        this.setState(prevState => {
+            return produce(prevState, (draft) => {
+                draft.movie.dislike += 1
+            })
+        })
+    }
+    render() {
+        return <div>
+            {/* state as prop and function as prop */}
+            <ReviewDashboard  {...this.state} onLike={this.onLike} onDislike={this.onDislike} />
+        </div>
+    }
+}
+
+const ReviewDashboard = ({ movie: { name, like, dislike }, actor, onLike, onDislike }) => {
+    return <>
+        <h1>Movie Reviews</h1>
+        <h2>Name: {name} </h2>
+        <h2>Actresses {actor.name}</h2>
+        <h3>Like : {like} Dislike {dislike}</h3>
+        <button onClick={onLike}>Like</button>
+        <button onClick={onDislike}>Dislike</button>
+    </>
+}
+
+const App = () => {
+    return <div>
+        <Review />
+    </div>
+
+}
+
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
 
 
 
