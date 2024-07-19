@@ -3,57 +3,75 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import { produce } from 'immer'
 
-class Review extends React.Component {
 
-    //nested state
+class Review extends React.Component {
     state = {
-        movie: {
-            name: ' Atlas',
-            like: 0,
-            dislike: 0
-        },
-        actor: {
-            name: 'Jennifer Lopez'
+        posts: [], //data
+        error: null,
+        isLoading: false
+    }
+
+
+    async componentDidMount() {
+        //api call
+        const url = 'https://jsonplaceholder.typicode.com/posts'
+        try {
+            const response = await fetch(url)
+            const posts = await response.json()
+            console.log(posts)
+            //pouplate the data with state
+            this.setState(prevState => {
+                return produce(prevState, (draft) => {
+                    //se
+                    draft.posts = posts
+                    draft.isLoading = true
+                })
+            })
+        }
+        catch (err) {
+            console.log(posts)
+            this.setState(prevState => {
+                return produce(prevState, (draft) => {
+                    //se
+                    draft.err = err
+                    // draft.isLoading = true
+                })
+            })
         }
     }
-    onLike = () => {
-        this.setState(prevState => {
-            return produce(prevState, (draft) => {
-                draft.movie.like += 1
-            })
-        })
-    }
-    onDislike = () => {
-        this.setState(prevState => {
-            return produce(prevState, (draft) => {
-                draft.movie.dislike += 1
-            })
-        })
-    }
-    render() {
-        return <div>
-            {/* state as prop and function as prop */}
-            <ReviewDashboard  {...this.state} onLike={this.onLike} onDislike={this.onDislike} />
-        </div>
-    }
-}
 
-const ReviewDashboard = ({ movie: { name, like, dislike }, actor, onLike, onDislike }) => {
-    return <>
-        <h1>Movie Reviews</h1>
-        <h2>Name: {name} </h2>
-        <h2>Actresses {actor.name}</h2>
-        <h3>Like : {like} Dislike {dislike}</h3>
-        <button onClick={onLike}>Like</button>
-        <button onClick={onDislike}>Dislike</button>
-    </>
+    render() {
+        //conditional rendering : based on ui state we need different ui
+        const { posts, error, isLoading } = this.state
+        if (error) {
+            return <div style={{ marginLeft: 50 }}>
+                <h1>Error : {error.message}</h1>
+            </div>
+        } else if (!isLoading) {
+            return <h1 style={{ textAlign: 'center' }}>Loading...</h1>
+        } else {
+            return <div style={{ marginLeft: 50 }}>
+                <h1>Posts</h1>
+                <hr />
+                <ul>
+                    {posts.map(post => {
+                        return <li>{post.title}</li>
+                    })}
+                </ul>
+            </div>
+
+        }
+
+    }
+
+
+
 }
 
 const App = () => {
     return <div>
         <Review />
     </div>
-
 }
 
 
@@ -63,4 +81,3 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <App />
     </React.StrictMode>,
 )
-
