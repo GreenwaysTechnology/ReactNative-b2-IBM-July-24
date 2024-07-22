@@ -3358,16 +3358,748 @@ root.render(<App />);
 			      Redux
 ...................................................................................
 
+.....................................................................................
+			 Redux -State Management
+.....................................................................................
+
+What is state?
+ State is nothing data.
+
+State is managed within component.
+
+What if i want to share the state across the application,there is pattern called "Lift up the state", pass as prop.
+
+In state management , redux is going to act as state layer, react is going act as UI layer.
+
+React and Redux is based on the design pattern "Flux Pattern"
 
 
+https://facebookarchive.github.io/flux/
 
 
+Action---->dispatcher----->Store<--->[Reducer] 
+			    |
+			    |
+			 View-React
 
 
+What is Redux -  Red-reducer + ux (Flux) => Reducer + Flux
+
+What is Reducer?
+  Reducer is pure function, which accepts input, returns immutable object...
+  Reducer is having biz logic.
+  Who calls reducer, reducer is called by store..
+  UI Layer never communicates biz logic (reducer) directly.
+  UI Layer sends request(action) --via dispatcher---to the store, then store reacts   to that
+
+Core Concepts or Principles:
+............................
+
+1.State:
+   Redux maintains or stores the data in "single object"Redux is going to store all 
+component state into one single object -Application State
+
+const appState = {
+  ....   
+} called as application state.
+
+How appState is identified for each compoent?
+
+ Based on category/module.
+
+const appState = {
+  
+  order: {
+    
+  },
+  customer: {},
+  product:{}
+
+} 
+2.Store
+   Store is object where Redux application state lives.
+   Store offers api to communicate from react and redux to react
+   Store is entry and exit point of react and redux
+   Per application , there is single store, that store is having state..
+
+3.reducer
+    You know very well how to mutate and where mutate state in react
+     ->Inside setState pure function.
+    Reducer is pure function which returns immutable object.
+
+4.actions
+    An action is like request in webserver, redux actions are plain javascript object
+ eg:
+  let counterAction = {
+	type:'counter/increment'
+  }
+ action may take input also called payload
+  let counterByAmount = {
+   type:'counter/increment',
+   payload:12
+ }
+5.Dispatcher 
+  It is transporter which transport action object from react to redux
+  Dispatcher is represented by a method called "dispatch"
+  dispatch is part of "Store object"
+  store.dispatch(action)
+
+....................................................................................
+..................................................................................					Building Redux
+...................................................................................
+
+in order to start redux we have two patterns
+
+1.old redux  - redux.js -https://redux.js.org/
+2.new redux called "Redux toolkit" -https://redux-toolkit.js.org/
 
 
+We are going to use "Redux toolkit"
+
+There are two ways create app:
+
+1.create react only, and update redux
+
+Using Vite:
+npm create vite router-app  --template react
+npm install @reduxjs/toolkit  react-redux
+
+2.create react-redux app one short
+
+Using vite
+
+npx degit reduxjs/redux-templates/packages/vite-template-redux my-app
+
+Using create-react-app
+
+npx create-react-app myreduxapp --template redux
+.....................................................................................
+
+Level-0 :State inside component.
+
+import React, {useState} from 'react'
+import ReactDOM from 'react-dom/client'
+
+const Review = ()=> {
+  const [like, setLike] = useState(0)
+ 
+  return <>
+    <h1>Like {like}</h1>
+    <button onClick={() => {
+            setLike(like + 1)
+        }}>+</button>
+  </>
+}
+
+const App = () => <div>
+     <Review/>
+</div>
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)
+...................................................................................
+Level:1 : Moving State , Mutation into redux
+
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { configureStore } from '@reduxjs/toolkit'
+import { Provider, useDispatch, useSelector } from 'react-redux'
 
 
+//reducer
+const ReviewReducer = (like = 10, action) => {
+    //biz
+    switch (action.type) {
+        case 'review/like':
+            return like + 1
+        default:
+            return like //default state/inital state
+    }
+}
+
+//create Store Object
+
+const store = configureStore({
+    reducer: {
+        review: ReviewReducer
+    }
+})
+
+///////////////////////////////////////////////////////
+const Review = () => {
+
+    //hook to get redux state
+    const like = useSelector(state => {
+        //appstate.reducerName
+        return state.review
+    })
+    const dispatch = useDispatch()
+
+    const onLike = () => {
+        //send action via dispatcher
+        dispatch({
+            type: 'review/like'
+        })
+    }
+
+    return <>
+        <h1>Like {like}</h1>
+        <button onClick={onLike}>+</button>
+    </>
+}
+
+const App = () => <div>
+    <Review />
+</div>
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <Provider store={store}>
+        <React.StrictMode>
+            <App />
+        </React.StrictMode>
+    </Provider>
+
+)
+..................................................................................
+configureStore() - RTK api
+
+=>to provide simplified configuration with default settings.
+
+type ConfigureEnhancersCallback = (
+  defaultEnhancers: StoreEnhancer[]
+) => StoreEnhancer[]
+
+interface ConfigureStoreOptions<
+  S = any,
+  A extends Action = AnyAction,
+  M extends Middlewares<S> = Middlewares<S>
+> {
+  /**
+   * A single reducer function that will be used as the root reducer, or an
+   * object of slice reducers that will be passed to `combineReducers()`.
+   */
+  reducer: Reducer<S, A> | ReducersMapObject<S, A>
+
+  /**
+   * An array of Redux middleware to install. If not supplied, defaults to
+   * the set of middleware returned by `getDefaultMiddleware()`.
+   */
+  middleware?: ((getDefaultMiddleware: CurriedGetDefaultMiddleware<S>) => M) | M
+
+  /**
+   * Whether to enable Redux DevTools integration. Defaults to `true`.
+   *
+   * Additional configuration can be done by passing Redux DevTools options
+   */
+  devTools?: boolean | DevToolsOptions
+
+  /**
+   * The initial state, same as Redux's createStore.
+   * You may optionally specify it to hydrate the state
+   * from the server in universal apps, or to restore a previously serialized
+   * user session. If you use `combineReducers()` to produce the root reducer
+   * function (either directly or indirectly by passing an object as `reducer`),
+   * this must be an object with the same shape as the reducer map keys.
+   */
+  preloadedState?: DeepPartial<S extends any ? S : S>
+
+  /**
+   * The store enhancers to apply. See Redux's `createStore()`.
+   * All enhancers will be included before the DevTools Extension enhancer.
+   * If you need to customize the order of enhancers, supply a callback
+   * function that will receive the original array (ie, `[applyMiddleware]`),
+   * and should return a new array (such as `[applyMiddleware, offline]`).
+   * If you only need to add middleware, you can use the `middleware` parameter instead.
+   */
+  enhancers?: StoreEnhancer[] | ConfigureEnhancersCallback
+}
+
+function configureStore<S = any, A extends Action = AnyAction>(
+  options: ConfigureStoreOptions<S, A>
+): EnhancedStore<S, A>
+.....................................................................................
+			Multi State/Multiple Reducers
+
+import React, { useState } from 'react'
+import ReactDOM from 'react-dom/client'
+import { produce } from 'immer'
+import { configureStore } from '@reduxjs/toolkit'
+import { Provider, useDispatch, useSelector } from 'react-redux'
+import './index.css'
+
+const LikeReducer = (review = { like: 10 }, action) => {
+    //logic
+    switch (action.type) {
+        case 'LIKE':
+            return produce(review, draft => {
+                draft.like += 1
+            })
+        default:
+            return review;
+    }
+}
+const DislikeReducer = (review = { dislike: 10 }, action) => {
+    switch (action.type) {
+        case 'DISLIKE':
+            return produce(review, draft => {
+                draft.dislike += 1
+            })
+
+        default:
+            //default state- initali state
+            return review;
+    }
+}
+
+const appStore = configureStore({
+    reducer: {
+        likeReducer: LikeReducer,
+        dislikeReducer: DislikeReducer
+    }
+})
+
+const Like = () => {
+    const review = useSelector(appState => {
+        return appState.likeReducer
+    })
+    const dispatch = useDispatch()
+
+    return <>
+        <h1>Like</h1>
+        <h1>like :{review.like}</h1>
+        <button onClick={() => {
+            dispatch({ type: 'LIKE' })
+        }}>Like</button>
+
+    </>
+
+}
+const Dislike = () => {
+    const review = useSelector(appState => {
+        return appState.dislikeReducer
+    })
+    const dispatch = useDispatch()
+
+    return <>
+        <h1>Dislike</h1>
+        <h1>dislike :{review.dislike}</h1>
+        <button onClick={() => {
+            dispatch({ type: 'DISLIKE' })
+        }}>Like</button>
+
+    </>
+
+}
 
 
+const Review = () => <>
+    <Like />
+    <Dislike />
+</>
+
+
+const App = () => {
+
+    //React -Redux binding Component
+    return <Provider store={appStore}>
+        <Review></Review>
+    </Provider>
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+.....................................................................................
+			  Action constant
+
+
+how to declare actions? what is standard naming convention?			
+
+
+action name must be string
+action name must match domain/actionName
+eg:
+   'review/like'
+action name can be captialized or complete smaller.
+
+import React, { useState } from 'react'
+import ReactDOM from 'react-dom/client'
+import { produce } from 'immer'
+import { configureStore } from '@reduxjs/toolkit'
+import { Provider, useDispatch, useSelector } from 'react-redux'
+import './index.css'
+
+
+//action constant
+const like = 'review/like'
+const dislike = 'review/dislike'
+
+
+const LikeReducer = (review = { like: 10 }, action) => {
+    //logic
+    switch (action.type) {
+        case like:
+            return produce(review, draft => {
+                draft.like += 1
+            })
+        default:
+            return review;
+    }
+}
+const DislikeReducer = (review = { dislike: 10 }, action) => {
+    switch (action.type) {
+        case dislike:
+            return produce(review, draft => {
+                draft.dislike += 1
+            })
+
+        default:
+            //default state- initali state
+            return review;
+    }
+}
+
+const appStore = configureStore({
+    reducer: {
+        likeReducer: LikeReducer,
+        dislikeReducer: DislikeReducer
+    }
+})
+
+const Like = () => {
+    const review = useSelector(appState => {
+        return appState.likeReducer
+    })
+    const dispatch = useDispatch()
+
+    return <>
+        <h1>Like</h1>
+        <h1>like :{review.like}</h1>
+        <button onClick={() => {
+            dispatch({ type: like })
+        }}>Like</button>
+
+    </>
+
+}
+const Dislike = () => {
+    const review = useSelector(appState => {
+        return appState.dislikeReducer
+    })
+    const dispatch = useDispatch()
+
+    return <>
+        <h1>Dislike</h1>
+        <h1>dislike :{review.dislike}</h1>
+        <button onClick={() => {
+            dispatch({ type: dislike })
+        }}>Like</button>
+
+    </>
+
+}
+
+
+const Review = () => <>
+    <Like />
+    <Dislike />
+</>
+
+
+const App = () => {
+
+    //React -Redux binding Component
+    return <Provider store={appStore}>
+        <Review></Review>
+    </Provider>
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+.....................................................................................
+			Payload-Input to reducer
+.....................................................................................
+
+Without input action syntax:
+
+const likeAction = {
+  type:'review/like'
+}
+
+with pay load(input)
+const likeAction = {
+  type:'review/like',
+  payload:value
+}
+here "payload" is just convention name only, we can use any name.
+
+import React, { useState } from 'react'
+import ReactDOM from 'react-dom/client'
+import { produce } from 'immer'
+import { configureStore } from '@reduxjs/toolkit'
+import { Provider, useDispatch, useSelector } from 'react-redux'
+import './index.css'
+
+
+//action constant
+const like = 'review/like'
+const dislike = 'review/dislike'
+
+
+const LikeReducer = (review = { like: 10 }, action) => {
+    //logic
+    switch (action.type) {
+        case like:
+            return produce(review, draft => {
+                draft.like += action.payload
+            })
+        default:
+            return review;
+    }
+}
+const DislikeReducer = (review = { dislike: 10 }, action) => {
+    switch (action.type) {
+        case dislike:
+            return produce(review, draft => {
+                draft.dislike += 1
+            })
+
+        default:
+            //default state- initali state
+            return review;
+    }
+}
+
+const appStore = configureStore({
+    reducer: {
+        likeReducer: LikeReducer,
+        dislikeReducer: DislikeReducer
+    }
+})
+
+const Like = () => {
+    const review = useSelector(appState => {
+        return appState.likeReducer
+    })
+    const dispatch = useDispatch()
+
+    return <>
+        <h1>Like</h1>
+        <h1>like :{review.like}</h1>
+        <button onClick={() => {
+            dispatch({ type: like, payload: 2 })
+        }}>Like</button>
+
+    </>
+
+}
+const Dislike = () => {
+    const review = useSelector(appState => {
+        return appState.dislikeReducer
+    })
+    const dispatch = useDispatch()
+
+    return <>
+        <h1>Dislike</h1>
+        <h1>dislike :{review.dislike}</h1>
+        <button onClick={() => {
+            dispatch({ type: dislike })
+        }}>Like</button>
+
+    </>
+
+}
+
+
+const Review = () => <>
+    <Like />
+    <Dislike />
+</>
+
+
+const App = () => {
+
+    //React -Redux binding Component
+    return <Provider store={appStore}>
+        <Review></Review>
+    </Provider>
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+................................................................................
+			Payload -input
+..................................................................................
+
+import React, { useState } from 'react'
+import ReactDOM from 'react-dom/client'
+import { produce } from 'immer'
+import { configureStore } from '@reduxjs/toolkit'
+import { Provider, useDispatch, useSelector } from 'react-redux'
+import './index.css'
+
+
+//action constant
+const like = 'review/like'
+const dislike = 'review/dislike'
+
+
+const LikeReducer = (review = { like: 10 }, action) => {
+    //logic
+    switch (action.type) {
+        case like:
+            return produce(review, draft => {
+                draft.like += action.payload.value
+            })
+        default:
+            return review;
+    }
+}
+const DislikeReducer = (review = { dislike: 10 }, action) => {
+    switch (action.type) {
+        case dislike:
+            return produce(review, draft => {
+                draft.dislike += 1
+            })
+
+        default:
+            //default state- initali state
+            return review;
+    }
+}
+
+const appStore = configureStore({
+    reducer: {
+        likeReducer: LikeReducer,
+        dislikeReducer: DislikeReducer
+    }
+})
+
+const Like = () => {
+    const review = useSelector(appState => {
+        return appState.likeReducer
+    })
+    const dispatch = useDispatch()
+
+    return <>
+        <h1>Like</h1>
+        <h1>like :{review.like}</h1>
+        <button onClick={() => {
+            dispatch({ type: like, payload: { value: 3 } })
+        }}>Like</button>
+
+    </>
+
+}
+const Dislike = () => {
+    const review = useSelector(appState => {
+        return appState.dislikeReducer
+    })
+    const dispatch = useDispatch()
+
+    return <>
+        <h1>Dislike</h1>
+        <h1>dislike :{review.dislike}</h1>
+        <button onClick={() => {
+            dispatch({ type: dislike })
+        }}>Like</button>
+
+    </>
+
+}
+
+
+const Review = () => <>
+    <Like />
+    <Dislike />
+</>
+
+
+const App = () => {
+
+    //React -Redux binding Component
+    return <Provider store={appStore}>
+        <Review></Review>
+    </Provider>
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+.....................................................................................
+			Reducers Deep dive
+.....................................................................................
+We have various ways of writing reducers.
+
+Patterns:
+1.old way
+const LikeReducer = (review = { like: 10 }, action) => {
+    //logic
+    switch (action.type) {
+        case like:
+            return produce(review, draft => {
+                draft.like += action.payload.value
+            })
+        default:
+            return review;
+    }
+}
+2.Modern way.
+
+2.1.Using createReducer api
+
+1.It is utillity function from redux-toolkit.
+2.It reduces lot of boiler plate code , provides standards based coding
+3.It is offering built in immer js api,so, no need of using "produce" directly..
+4.No need of switch..case and actions...
+
+createReducer api coding has 1 pattern
+
+1.builder pattern
+
+Old reducer code:
+const ReviewReducer = (state = { like: 0, dislike: 0 }, action) => {
+    //biz
+    switch (action.type) {
+        case like:
+            return produce(state, (draft) => {
+                draft.like += 1
+            })
+        case dislike:
+            return produce(state, (draft) => {
+                draft.dislike += 1
+            })
+        default:
+            return state //default state/inital state
+    }
+}
+=>It handles for a specific action types.
+=>It matching against a range of actions
+=>It handles a default case
+
+Syntax:
+
+const reducer =createReducer(initalState,(builder)=>{
+  builder.addCase(actionName,(state,action)=>{
+     //immer js code: produce function is built in
+     state.value++
+  }).
+  builder.addCase(actionName,(state,action)=>{
+     //immer js code: produce function is built in
+     state.value--
+  }).addDefaultCase((state,action)=>{})
+})
 
