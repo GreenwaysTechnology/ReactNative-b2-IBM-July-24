@@ -1,66 +1,68 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
+import { produce } from 'immer';
+import React, { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom/client';
 import './index.css'
-import { produce } from 'immer'
 
 
-class Review extends React.Component {
-    state = {
+const Posts = () => {
+    const [post, setPost] = useState({
         posts: [], //data
         error: null,
         isLoading: false
-    }
+    })
 
-
-    async componentDidMount() {
-        //api call
+    //api
+    async function fetchPosts() {
         const url = 'https://jsonplaceholder.typicode.com/posts'
         try {
             const response = await fetch(url)
             const posts = await response.json()
             console.log(posts)
-            //pouplate the data with state
-            this.setState(prevState => {
-                return produce(prevState, (draft) => {
-                    //se
+            setPost(previousState => {
+                return produce(previousState, draft => {
                     draft.posts = posts
                     draft.isLoading = true
+                    draft.error = previousState.error
                 })
             })
         }
         catch (err) {
-            console.log(posts)
-            this.setState(prevState => {
-                return produce(prevState, (draft) => {
-                    //se
-                    draft.err = err
-                    // draft.isLoading = true
+            setPost(previousState => {
+                return produce(previousState, draft => {
+                    draft.error = err
                 })
             })
         }
     }
 
-    render() {
-        //conditional rendering : based on ui state we need different ui
-        const { posts, error, isLoading } = this.state
-        if (error) {
-            return <div style={{ marginLeft: 50 }}>
-                <h1>Error : {error.message}</h1>
-            </div>
-        } else if (!isLoading) {
-            return <h1 style={{ textAlign: 'center' }}>Loading...</h1>
-        } else {
-            return <div style={{ marginLeft: 50 }}>
-                <h1>Posts</h1>
-                <hr />
-                <ul>
-                    {posts.map(post => {
-                        return <li>{post.title}</li>
-                    })}
-                </ul>
-            </div>
+    //componentDidMount
+    useEffect(() => {
+        //api logic
+        fetchPosts()
 
+        //componentwillunMount
+        return () => {
+            console.log('any clean up activity')
         }
+
+    }, [])
+
+    if (post.error) {
+        return <div style={{ marginLeft: 50 }}>
+            <h1>Error : {post.error.message}</h1>
+        </div>
+    } else if (!post.isLoading) {
+        return <h1 style={{ textAlign: 'center' }}>🛴</h1>
+    } else {
+        return <div style={{ marginLeft: 50 }}>
+            <h1>Posts</h1>
+            <hr />
+            <ul>
+                {post.posts.map(post => {
+                    return <li key={post.id}>{post.title}</li>
+                })}
+            </ul>
+        </div>
 
     }
 
@@ -68,16 +70,13 @@ class Review extends React.Component {
 
 }
 
+
 const App = () => {
-    return <div>
-        <Review />
-    </div>
+    return <>
+        <Posts />
+    </>
 }
 
 
-
-ReactDOM.createRoot(document.getElementById('root')).render(
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>,
-)
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
