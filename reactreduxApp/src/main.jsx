@@ -1,67 +1,81 @@
-import ReactDOM from 'react-dom/client'
-import React from 'react'
-import { configureStore, createAction, createReducer } from '@reduxjs/toolkit'
-import { Provider, useDispatch, useSelector } from 'react-redux'
-import './index.css'
+import { createSlice, createAsyncThunk, configureStore } from '@reduxjs/toolkit'
+import { useEffect } from 'react'
+import { useDispatch, useSelector, Provider } from 'react-redux'
+import { createRoot } from 'react-dom/client';
 
-//with creatAction
-const increment = createAction('review/like')
-const decrement = createAction('review/dislike')
 
-//createReducer 
 const initialState = {
-    like: 0,
-    dislike: 0
-}
+    entities: [],
+    loading: false,
 
-const ReviewReducer = createReducer(initialState, (builder) => {
-    builder.addCase(increment, (state, action) => {
-        state.like += action.payload
-    }).addCase(decrement, (state, action) => {
-        //state.dislike++
-        state.dislike += action.payload
-    }).addDefaultCase((state, action) => { })
+}
+//posts/getPosts - action name
+//posts/getPosts/pending
+//posts/getPosts/fulfilled
+const getPosts = createAsyncThunk('posts/getPosts', async (thunkAPI) => {
+    const res = await fetch('https://jsonplaceholder.typicode.com/posts')
+    const posts = await res.json()
+    return posts
 })
 
 
-const appStore = configureStore({
+const postSlice = createSlice({
+    name: 'posts',
+    initialState,
+    reducers: {},
+    extraReducers(builder) {
+        builder.addCase(getPosts.pending, (state, action) => {
+            state.loading = true
+        }).addCase(getPosts.fulfilled, (state, { payload }) => {
+            state.loading = false
+            state.entities = payload
+        }).addCase(getPosts.rejected, (state, action) => {
+            state.loading = false
+        })
+    }
+
+})
+
+export const postReducer = postSlice.reducer
+
+
+//store.js
+export const appStore = configureStore({
     reducer: {
-        reviewReducer: ReviewReducer
+        posts: postReducer
     }
 })
-
-
-
-const Review = () => {
-    const review = useSelector(appState => {
-        console.log(appState.reviewReducer)
-        return appState.reviewReducer
-    })
+export default function Home() {
     const dispatch = useDispatch()
-    return <>
-        <h1>Review</h1>
-        <h1>like :{review.like} dislike :{review.dislike}</h1>
-        <button onClick={() => {
-            dispatch(increment(2))
-        }}>Like</button>
-        <button onClick={() => {
-            dispatch(decrement(3))
-        }}>Dislike</button>
+    const { entities, loading } = useSelector((state) => state.posts)
 
-    </>
+    //componentDidMount
+    useEffect(() => {
+        dispatch(getPosts())
+    }, [])
+
+
+
+    if (loading) return <p>Loading...</p>
+
+    return (
+        <div>
+            <h2>Blog Posts</h2>
+            {entities.map((post) => (
+                <p key={post.id}>{post.title}</p>
+            ))}
+        </div>
+    )
 }
 
-
-const App = () => {
-
-    //React -Redux binding Component
-    return <Provider store={appStore}>
-        <Review></Review>
+const App = () => <div style={{ margin: 50, padding: 50, backgroundColor: 'ButtonFace' }}>
+    <Provider store={appStore}>
+        <h1 style={{ textAlign: 'center' }}>React Redux Integration App</h1>
+        <Home />
     </Provider>
-}
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>,
-)
+</div>
+const container = document.getElementById('root');
+const root = createRoot(container);
+
+root.render(<App />);

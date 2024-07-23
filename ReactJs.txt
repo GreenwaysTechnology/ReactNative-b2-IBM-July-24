@@ -4249,7 +4249,333 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <App />
     </React.StrictMode>,
 )
+....................................................................................
+			   createSlice
+			 (actions,reducers)
+....................................................................................
+
+it uses internally createAction,createReducer,immerjs api every thing in one place.
+
+createSlice api is standard apporach to write redux logic
+
+const slice = createSlice({})
+
+parameters:
+initalState
+name
+reducers
+extraReducers
+reducerPath
+selectors
+
+Return Value:
+selectors
+
+eg:
+import ReactDOM from 'react-dom/client'
+import React from 'react'
+import { configureStore, createSlice } from '@reduxjs/toolkit'
+import { Provider, useDispatch, useSelector } from 'react-redux'
+import './index.css'
+
+
+const initialState = {
+    like: 0,
+    dislike: 0
+}
+const ReviewSlice = createSlice({
+    //initialState: initialState,
+    initialState,
+    name: 'review',
+    reducers: {
+        //api
+        increment(state, action) {
+            state.like++
+        },
+        decrement(state, action) {
+            state.dislike++
+        },
+        incrementByAmount(state, action) {
+            state.like += action.payload
+        }
+    }
+
+})
+//extract reducer from the slice
+const ReviewReducer = ReviewSlice.reducer
+//extract actions from the slice
+const { increment, decrement, incrementByAmount } = ReviewSlice.actions
+
+
+const appStore = configureStore({
+    reducer: {
+        reviewReducer: ReviewReducer
+    }
+})
 
 
 
+const Review = () => {
+    const review = useSelector(appState => {
+        console.log(appState.reviewReducer)
+        return appState.reviewReducer
+    })
+    const dispatch = useDispatch()
+    return <>
+        <h1>Review</h1>
+        <h1>like :{review.like} dislike :{review.dislike}</h1>
+        <button onClick={() => {
+            dispatch(increment())
+        }}>Like</button>
+        <button onClick={() => {
+            dispatch(decrement())
+        }}>Dislike</button>
 
+    </>
+}
+
+
+const App = () => {
+
+    //React -Redux binding Component
+    return <Provider store={appStore}>
+        <Review></Review>
+    </Provider>
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+....................................................................................
+			     Middlewares
+...................................................................................
+What is middleware?
+ Middleware is collection of functions, used for some cross cutting concerns...
+
+eg:
+logging
+TimeTravel
+async task
+
+configureStore(middleware:[])
+/**
+   * An array of Redux middleware to install. If not supplied, defaults to
+   * the set of middleware returned by `getDefaultMiddleware()`.
+   */
+middleware?: ((getDefaultMiddleware: CurriedGetDefaultMiddleware<S>) => M) | M
+
+This function has already default middlewars
+1.Immutability check middleware
+2.Serializability check middleware
+3.Action creator check middleware
+4.thunk
+
+ +
+
+Your middlewares
+
+
+To add Middleware
+
+Way 1:
+
+const middlewares = [thunk,immutableStateInvariant,seralizableStateInvariant]
+
+configureStore({
+ middleware: middleware
+})
+
+way 2:
+configureStore({
+ middleware: (getDefaultMiddleware)=>getDefaultMiddleware().concat(yourMiddleware)
+})
+
+Use case:
+Adding redux-logger:
+
+npm i --save redux-logger
+
+
+import ReactDOM from 'react-dom/client'
+import React from 'react'
+import { configureStore, createSlice } from '@reduxjs/toolkit'
+import { Provider, useDispatch, useSelector } from 'react-redux'
+import './index.css'
+import logger from 'redux-logger'
+
+
+const initialState = {
+    like: 0,
+    dislike: 0
+}
+const ReviewSlice = createSlice({
+    //initialState: initialState,
+    initialState,
+    name: 'review',
+    reducers: {
+        //api
+        increment(state, action) {
+            state.like++
+        },
+        decrement(state, action) {
+            state.dislike++
+        },
+        incrementByAmount(state, action) {
+            state.like += action.payload
+        }
+    }
+
+})
+//extract reducer from the slice
+const ReviewReducer = ReviewSlice.reducer
+//extract actions from the slice
+const { increment, decrement, incrementByAmount } = ReviewSlice.actions
+
+
+const appStore = configureStore({
+    reducer: {
+        reviewReducer: ReviewReducer
+    },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger)
+})
+
+
+
+const Review = () => {
+    const review = useSelector(appState => {
+        return appState.reviewReducer
+    })
+    const dispatch = useDispatch()
+    return <>
+        <h1>Review</h1>
+        <h1>like :{review.like} dislike :{review.dislike}</h1>
+        <button onClick={() => {
+            dispatch(increment())
+        }}>Like</button>
+        <button onClick={() => {
+            dispatch(decrement())
+        }}>Dislike</button>
+
+    </>
+}
+
+
+const App = () => {
+
+    //React -Redux binding Component
+    return <Provider store={appStore}>
+        <Review></Review>
+    </Provider>
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+		
+....................................................................................
+			API Calls and Redux ToolKit
+....................................................................................
+
+API calls can be done only with help of middleware in redux called "thunk" middleware.
+thunk is just default middlware for redux toolkit.
+
+createAsyncThunk;
+
+ A function that accepts a Redux action type string and a callback function that should return a promise.
+
+How to implement async calls using createAsyncThunk middleware.
+
+createAsyncThunk('actions',async function(){})
+
+actions = "posts/fetcPosts" ---> would be converted like below
+
+pending: 'posts/fetcPosts/pending'
+fulfilled: 'posts/fetcPosts/fulfilled'
+rejected: 'posts/fetchPosts/rejected'
+
+pending,fulfilled,rejected which are promise internal state.
+
+There are two things you have to write
+
+1.thunk middleware function - to fetch data from api
+2.slice function - reducers,extrareducers. - to send data to ui
+
+
+import { createSlice, createAsyncThunk, configureStore } from '@reduxjs/toolkit'
+import { useEffect } from 'react'
+import { useDispatch, useSelector, Provider } from 'react-redux'
+import { createRoot } from 'react-dom/client';
+
+
+const initialState = {
+    entities: [],
+    loading: false,
+
+}
+
+const getPosts = createAsyncThunk('posts/getPosts', async (thunkAPI) => {
+    const res = await fetch('https://jsonplaceholder.typicode.com/posts')
+    const posts = await res.json()
+    return posts
+})
+
+
+const postSlice = createSlice({
+    name: 'posts',
+    initialState,
+    reducers: {},
+    extraReducers(builder) {
+        builder.addCase(getPosts.pending, (state, action) => {
+            state.loading = true
+        }).addCase(getPosts.fulfilled, (state, { payload }) => {
+            state.loading = false
+            state.entities = payload
+        }).addCase(getPosts.rejected, (state, action) => {
+            state.loading = false
+        })
+    }
+
+})
+
+const postReducer = postSlice.reducer
+
+const appStore = configureStore({
+    reducer: {
+        posts: postReducer
+    }
+})
+export default function Home() {
+    const dispatch = useDispatch()
+    const { entities, loading } = useSelector((state) => state.posts)
+
+    useEffect(() => {
+        dispatch(getPosts())
+    }, [])
+
+    if (loading) return <p>Loading...</p>
+
+    return (
+        <div>
+            <h2>Blog Posts</h2>
+            {entities.map((post) => (
+                <p key={post.id}>{post.title}</p>
+            ))}
+        </div>
+    )
+}
+
+const App = () => <div style={{ margin: 50, padding: 50, backgroundColor: 'ButtonFace' }}>
+    <Provider store={appStore}>
+        <h1 style={{ textAlign: 'center' }}>React Redux Integration App</h1>
+        <Home />
+    </Provider>
+
+</div>
+const container = document.getElementById('root');
+const root = createRoot(container);
+
+root.render(<App />);
