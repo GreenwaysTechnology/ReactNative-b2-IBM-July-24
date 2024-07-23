@@ -1,12 +1,12 @@
 import ReactDOM from 'react-dom/client'
 import React from 'react'
-import { configureStore, createAction, createReducer } from '@reduxjs/toolkit'
+import { configureStore, createReducer } from '@reduxjs/toolkit'
 import { Provider, useDispatch, useSelector } from 'react-redux'
 import './index.css'
 
-//with creatAction
-const increment = createAction('review/like')
-const decrement = createAction('review/dislike')
+//action constant
+const likeAction = 'review/like'
+const dislikeAction = 'review/dislike'
 
 //createReducer 
 const initialState = {
@@ -15,11 +15,11 @@ const initialState = {
 }
 
 const ReviewReducer = createReducer(initialState, (builder) => {
-    builder.addCase(increment, (state, action) => {
-        state.like += action.payload
-    }).addCase(decrement, (state, action) => {
-        //state.dislike++
-        state.dislike += action.payload
+    builder.addCase(likeAction, (state, action) => {
+        //immerjs code 
+        state.like++
+    }).addCase(dislikeAction, (state, action) => {
+        state.dislike++
     }).addDefaultCase((state, action) => { })
 })
 
@@ -42,10 +42,10 @@ const Review = () => {
         <h1>Review</h1>
         <h1>like :{review.like} dislike :{review.dislike}</h1>
         <button onClick={() => {
-            dispatch(increment(2))
+            dispatch({ type: likeAction })
         }}>Like</button>
         <button onClick={() => {
-            dispatch(decrement(3))
+            dispatch({ type: dislikeAction })
         }}>Dislike</button>
 
     </>

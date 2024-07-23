@@ -3354,9 +3354,6 @@ const App = () => {
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
-.....................................................................................
-			      Redux
-...................................................................................
 
 .....................................................................................
 			 Redux -State Management
@@ -3938,107 +3935,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <App />
     </React.StrictMode>,
 )
-................................................................................
-			Payload -input
-..................................................................................
-
-import React, { useState } from 'react'
-import ReactDOM from 'react-dom/client'
-import { produce } from 'immer'
-import { configureStore } from '@reduxjs/toolkit'
-import { Provider, useDispatch, useSelector } from 'react-redux'
-import './index.css'
-
-
-//action constant
-const like = 'review/like'
-const dislike = 'review/dislike'
-
-
-const LikeReducer = (review = { like: 10 }, action) => {
-    //logic
-    switch (action.type) {
-        case like:
-            return produce(review, draft => {
-                draft.like += action.payload.value
-            })
-        default:
-            return review;
-    }
-}
-const DislikeReducer = (review = { dislike: 10 }, action) => {
-    switch (action.type) {
-        case dislike:
-            return produce(review, draft => {
-                draft.dislike += 1
-            })
-
-        default:
-            //default state- initali state
-            return review;
-    }
-}
-
-const appStore = configureStore({
-    reducer: {
-        likeReducer: LikeReducer,
-        dislikeReducer: DislikeReducer
-    }
-})
-
-const Like = () => {
-    const review = useSelector(appState => {
-        return appState.likeReducer
-    })
-    const dispatch = useDispatch()
-
-    return <>
-        <h1>Like</h1>
-        <h1>like :{review.like}</h1>
-        <button onClick={() => {
-            dispatch({ type: like, payload: { value: 3 } })
-        }}>Like</button>
-
-    </>
-
-}
-const Dislike = () => {
-    const review = useSelector(appState => {
-        return appState.dislikeReducer
-    })
-    const dispatch = useDispatch()
-
-    return <>
-        <h1>Dislike</h1>
-        <h1>dislike :{review.dislike}</h1>
-        <button onClick={() => {
-            dispatch({ type: dislike })
-        }}>Like</button>
-
-    </>
-
-}
-
-
-const Review = () => <>
-    <Like />
-    <Dislike />
-</>
-
-
-const App = () => {
-
-    //React -Redux binding Component
-    return <Provider store={appStore}>
-        <Review></Review>
-    </Provider>
-}
-
-ReactDOM.createRoot(document.getElementById('root')).render(
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>,
-)
 .....................................................................................
 			Reducers Deep dive
 .....................................................................................
@@ -4102,4 +3998,258 @@ const reducer =createReducer(initalState,(builder)=>{
      state.value--
   }).addDefaultCase((state,action)=>{})
 })
+
+Eg:
+import ReactDOM from 'react-dom/client'
+import React from 'react'
+import { configureStore, createReducer } from '@reduxjs/toolkit'
+import { Provider, useDispatch, useSelector } from 'react-redux'
+import './index.css'
+
+//action constant
+const likeAction = 'review/like'
+const dislikeAction = 'review/dislike'
+
+//createReducer 
+const initialState = {
+    like: 0,
+    dislike: 0
+}
+
+const ReviewReducer = createReducer(initialState, (builder) => {
+    builder.addCase(likeAction, (state, action) => {
+        //immerjs code 
+        state.like++
+    }).addCase(dislikeAction, (state, action) => {
+        state.dislike++
+    }).addDefaultCase((state, action) => { })
+})
+
+
+const appStore = configureStore({
+    reducer: {
+        reviewReducer: ReviewReducer
+    }
+})
+
+
+
+const Review = () => {
+    const review = useSelector(appState => {
+        console.log(appState.reviewReducer)
+        return appState.reviewReducer
+    })
+    const dispatch = useDispatch()
+    return <>
+        <h1>Review</h1>
+        <h1>like :{review.like} dislike :{review.dislike}</h1>
+        <button onClick={() => {
+            dispatch({ type: likeAction })
+        }}>Like</button>
+        <button onClick={() => {
+            dispatch({ type: dislikeAction })
+        }}>Dislike</button>
+
+    </>
+}
+
+
+const App = () => {
+
+    //React -Redux binding Component
+    return <Provider store={appStore}>
+        <Review></Review>
+    </Provider>
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+....................................................................................
+			  Action constant
+....................................................................................
+
+As of now action constants are declared as string .
+
+eg:
+ const like ='review/like'
+
+action creator:
+  it is function which returns action.
+  it is usefull for dynamic action
+
+ eg
+   function increment(payload){
+     
+      return {
+         type:'review/like',
+         payload:payload
+      }    
+   }
+
+   increment(2) => {
+         type:'review/like',
+         payload:2
+      }    
+
+if i want action creator, i need to declare two things, creator function and action constant.
+ 
+createAction function is used to declare action creator and also action constant.
+
+
+
+eG:
+ manual actionconstant and action creator
+import ReactDOM from 'react-dom/client'
+import React from 'react'
+import { configureStore, createReducer } from '@reduxjs/toolkit'
+import { Provider, useDispatch, useSelector } from 'react-redux'
+import './index.css'
+
+//without creatAction
+
+//action constant
+const likeAction = 'review/like'
+const dislikeAction = 'review/dislike'
+
+//action creator
+function increment(payload) {
+    return {
+        type: likeAction,
+        payload: payload
+    }
+}
+
+
+//createReducer 
+const initialState = {
+    like: 0,
+    dislike: 0
+}
+
+const ReviewReducer = createReducer(initialState, (builder) => {
+    builder.addCase(likeAction, (state, action) => {
+        //immerjs code
+        console.log(action)
+        state.like += action.payload
+    }).addCase(dislikeAction, (state, action) => {
+        state.dislike++
+    }).addDefaultCase((state, action) => { })
+})
+
+
+const appStore = configureStore({
+    reducer: {
+        reviewReducer: ReviewReducer
+    }
+})
+
+
+
+const Review = () => {
+    const review = useSelector(appState => {
+        console.log(appState.reviewReducer)
+        return appState.reviewReducer
+    })
+    const dispatch = useDispatch()
+    return <>
+        <h1>Review</h1>
+        <h1>like :{review.like} dislike :{review.dislike}</h1>
+        <button onClick={() => {
+            dispatch(increment(2))
+        }}>Like</button>
+        <button onClick={() => {
+            dispatch({ type: dislikeAction })
+        }}>Dislike</button>
+
+    </>
+}
+
+
+const App = () => {
+
+    //React -Redux binding Component
+    return <Provider store={appStore}>
+        <Review></Review>
+    </Provider>
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+..
+import ReactDOM from 'react-dom/client'
+import React from 'react'
+import { configureStore, createAction, createReducer } from '@reduxjs/toolkit'
+import { Provider, useDispatch, useSelector } from 'react-redux'
+import './index.css'
+
+//with creatAction
+const increment = createAction('review/like')
+const decrement = createAction('review/dislike')
+
+//createReducer 
+const initialState = {
+    like: 0,
+    dislike: 0
+}
+
+const ReviewReducer = createReducer(initialState, (builder) => {
+    builder.addCase(increment, (state, action) => {
+        state.like += action.payload
+    }).addCase(decrement, (state, action) => {
+        //state.dislike++
+        state.dislike += action.payload
+    }).addDefaultCase((state, action) => { })
+})
+
+
+const appStore = configureStore({
+    reducer: {
+        reviewReducer: ReviewReducer
+    }
+})
+
+
+
+const Review = () => {
+    const review = useSelector(appState => {
+        console.log(appState.reviewReducer)
+        return appState.reviewReducer
+    })
+    const dispatch = useDispatch()
+    return <>
+        <h1>Review</h1>
+        <h1>like :{review.like} dislike :{review.dislike}</h1>
+        <button onClick={() => {
+            dispatch(increment(2))
+        }}>Like</button>
+        <button onClick={() => {
+            dispatch(decrement(3))
+        }}>Dislike</button>
+
+    </>
+}
+
+
+const App = () => {
+
+    //React -Redux binding Component
+    return <Provider store={appStore}>
+        <Review></Review>
+    </Provider>
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+)
+
+
+
 
