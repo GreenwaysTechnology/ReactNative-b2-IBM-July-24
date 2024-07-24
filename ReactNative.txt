@@ -269,3 +269,948 @@ Every react native project powers with "typescript" language. if y want to write
 
 
 
+
+Entry file:
+
+index.js
+
+import {AppRegistry} from 'react-native';
+import App from './App';
+import {name as appName} from './app.json';
+
+AppRegistry.registerComponent(appName, () => App);
+		|
+               Mounting root Component
+
+Root Component is always App Component.
+
+React Native Application Architecture:
+......................................
+
+React Native apps are collection of components(From react native core,third party components,expo components).
+
+
+React Native App= {Components + React Core Features + React Native Router}
+
+React Native App= {Components + React Core Features + React Native Router}
+
+Core Components:
+
+1.View
+2.Text
+3.Image
+4.TextInput
+5.ScrollView
+6.StyleSheet
+
+User Interface:
+1.Button
+2.Switch
+
+List Views:
+1.FlatList
+2.SectionList
+
+Others:
+
+1.Alert
+2.ActivityIndicator
+3.Modal
+4.StatusBar
+5.Animated
+etc...
+
+
+View and Text:
+.............
+
+View 
+
+ 	The most fundamental component for building a UI, View is a container that supports layout with flexbox, style, some touch handling, and accessibility controls. 
+View maps directly to the native view equivalent on whatever platform React Native is running on, whether that is a UIView, <div>, android.view, etc.
+
+Text 
+   A React component for displaying text.
+
+Text supports nesting, styling, and touch handling.
+
+import { Text, View } from "react-native";
+
+
+
+function App() {
+    return <View>
+            <Text>Welcome to React Native!</Text>
+    </View>
+}
+
+export default App;
+
+Pointers:
+
+1.Every react native app  entry is App.js only
+2.App component must be exported using "export default only"
+
+.........
+..................................................................................
+			 Styling
+..................................................................................
+Styles:
+.......
+
+In react Styles are added through css, react native does not support css because no html is used.
+
+React Native does not allow css directly, but supports indirectly via javascript..
+
+CSS can applied to web in two ways
+
+1.via CSS language
+
+body {
+
+}
+#container { 
+
+}
+
+<div class="container"></div>
+
+2.via javascript 
+  Dynamic css.
+
+CSS added to element dynamically after page has been rendered.
+
+JS provides an api to add css dynamically.
+
+anyElement.style=stylevalue
+
+eg:
+document.getElementById("myDiv").style.border = "thick solid #0000FF";
+
+https://www.w3schools.com/jsref/dom_obj_style.asp
+
+React native supports css via coding...
+.....................................................................................
+...................................................................................
+			StyleSheet - Component
+..................................................................................
+
+A StyleSheet is an abstraction similar to CSS StyleSheets
+
+How to declare style?
+
+StyleSheet object has method called "create" method
+
+StyleSheet.create({
+ styleProperty: propvalue,
+ stylePropery:{
+    styleProp:propValue
+ }
+});
+
+StyleSheet must follow css javascript property rules..
+import { Text, View, StyleSheet } from "react-native";
+
+
+
+function App() {
+    return <View style={styles.container}>
+        <Text style={styles.label}>Welcome to React Native!</Text>
+    </View>
+}
+
+export default App;
+
+//styles
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'pink',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    label: {
+        fontSize:20,
+        fontWeight:'bold',
+        color:'blue'
+    }
+})
+
+....................................................................................
+			 Compoents and React Native
+....................................................................................
+
+In React Native every thing is component.
+
+Types of compoents:
+
+1.React native built in compoents
+  View,Stylesheet,Text etc..
+
+2.Custom Components
+  Components are created by us
+
+
+Components follows React core principles 
+
+1.composition
+2.props
+3.state
+
+Write components:
+
+import { Text, View, StyleSheet } from "react-native";
+
+
+const Welcome = props => {
+    return <>
+        <Text style={styles.label}>Welcome to React Native!</Text>
+    </>
+}
+
+
+function App() {
+    return <View style={styles.container}>
+            <Welcome/>
+    </View>
+}
+
+export default App;
+
+//styles
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'pink',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    label: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'blue'
+    }
+})
+
+props:
+import { Text, View, StyleSheet } from "react-native";
+
+
+const Welcome = ({ message = 'Welcome to React Native' }) => {
+    return <>
+        <Text style={styles.label}>{message}</Text>
+    </>
+}
+
+
+function App() {
+    return <View style={styles.container}>
+        <Welcome />
+        <Welcome message="Hello React Native!"/>
+
+    </View>
+}
+
+export default App;
+
+//styles
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'pink',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    label: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'blue'
+    }
+})
+
+Modularation:
+
+src/components/Welcome.jsx
+import { StyleSheet, Text } from "react-native"
+
+const Welcome = ({ message = 'Welcome to React Native' }) => {
+    return <>
+        <Text style={styles.label}>{message}</Text>
+    </>
+}
+
+const styles = StyleSheet.create({
+    label: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'blue'
+    }
+})
+export { Welcome }
+
+
+src/components/index.js
+
+import { Welcome } from "./Welcome";
+
+export { Welcome }
+
+src/App.js
+import { View, StyleSheet } from "react-native";
+import { Welcome } from "./src/components";
+
+function App() {
+    return <View style={styles.container}>
+        <Welcome />
+        <Welcome message="Hello React Native , How are you?" />
+
+    </View>
+}
+
+export default App;
+
+//styles
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'pink',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    label: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'blue'
+    }
+})
+
+.....................................................................................
+			State and React Native
+.....................................................................................
+import { useState } from "react";
+import { View, StyleSheet, Text, Button } from "react-native";
+
+
+const Review = () => {
+    const [like, setLike] = useState(0)
+
+    const onLike = () => {
+        setLike(like + 1)
+    }
+
+    return <>
+        <Text style={styles.label}>Like {like}</Text>
+        <Button title="Like" onPress={onLike} />
+    </>
+}
+
+
+function App() {
+    return <View style={styles.container}>
+        <Review />
+    </View>
+}
+
+export default App;
+
+//styles
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'pink',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    label: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'blue'
+    }
+})
+
+
+Redux Integration:
+
+import { View, StyleSheet, Text, Button } from "react-native";
+import { configureStore, createSlice } from '@reduxjs/toolkit'
+import { Provider, useDispatch, useSelector } from 'react-redux'
+
+const initialState = {
+    like: 0,
+}
+const ReviewSlice = createSlice({
+    initialState,
+    name: 'review',
+    reducers: {
+        increment(state, action) {
+            state.like++
+        }
+    }
+})
+//extract reducer from the slice
+const ReviewReducer = ReviewSlice.reducer
+//extract actions from the slice
+const { increment } = ReviewSlice.actions
+
+const appStore = configureStore({
+    reducer: {
+        reviewReducer: ReviewReducer
+    }
+})
+
+const Review = () => {
+    const review = useSelector(appState => {
+        return appState.reviewReducer
+    })
+    const dispatch = useDispatch()
+
+    const onLike = () => {
+        dispatch(increment())
+    }
+
+    return <>
+        <Text style={styles.label}>Like {review.like}</Text>
+        <Button title="Like" onPress={onLike} />
+    </>
+}
+
+
+function App() {
+    return <Provider store={appStore}>
+        <View style={styles.container}>
+            <Review />
+        </View>
+    </Provider>
+}
+
+export default App;
+
+//styles
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'pink',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    label: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'blue'
+    }
+})
+....................................................................................
+			API Calls, use Effect,Redux Thunk
+.....................................................................................
+
+import { View, StyleSheet, Text } from "react-native";
+import { createSlice, createAsyncThunk, configureStore } from '@reduxjs/toolkit'
+import { Provider, useDispatch, useSelector } from 'react-redux'
+import { useEffect } from "react";
+
+const initialState = {
+    entities: [],
+    loading: false,
+
+}
+
+const getPosts = createAsyncThunk('posts/getPosts', async (thunkAPI) => {
+    const res = await fetch('https://jsonplaceholder.typicode.com/posts')
+    const posts = await res.json()
+    return posts
+})
+
+const postSlice = createSlice({
+    name: 'posts',
+    initialState,
+    reducers: {},
+    extraReducers(builder) {
+        builder.addCase(getPosts.pending, (state, action) => {
+            state.loading = true
+        }).addCase(getPosts.fulfilled, (state, { payload }) => {
+            state.loading = false
+            state.entities = payload
+        }).addCase(getPosts.rejected, (state, action) => {
+            state.loading = false
+        })
+    }
+
+})
+
+const postReducer = postSlice.reducer
+
+const appStore = configureStore({
+    reducer: {
+        posts: postReducer
+    }
+})
+function Post() {
+    const dispatch = useDispatch()
+    const { entities, loading } = useSelector((state) => state.posts)
+
+    useEffect(() => {
+        dispatch(getPosts())
+    }, [])
+
+    if (loading) return <Text style={styles.label}>Loading...</Text>
+
+    return (
+        <View>
+            <Text>Blog Posts</Text>
+            {entities.map((post) => (
+                <Text key={post.id}>{post.title}</Text>
+            ))}
+        </View>
+    )
+}
+
+function App() {
+    return <Provider store={appStore}>
+        <View style={styles.container}>
+            <Post />
+        </View>
+    </Provider>
+}
+
+export default App;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'pink',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    label: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'blue'
+    }
+})
+
+After running this code , you can see the data is displyed, but not able scroll.
+...................................................................................
+			 Container Components
+...................................................................................
+
+Container components are components which contains other components which is called "View" in React Native.
+
+Types of Views:
+
+1.View
+2.ScrollView
+3.ListView
+4.SectionList
+
+
+.................................................................................
+			Scroll Behaviour
+.................................................................................
+
+View is going to hold child elements, act as container
+ScrollView is going hold child elements , act as container with scrollbar.
+
+import { View, StyleSheet, Text, ScrollView } from "react-native";
+import { createSlice, createAsyncThunk, configureStore } from '@reduxjs/toolkit'
+import { Provider, useDispatch, useSelector } from 'react-redux'
+import { useEffect } from "react";
+
+const initialState = {
+    entities: [],
+    loading: false,
+
+}
+
+const getPosts = createAsyncThunk('posts/getPosts', async (thunkAPI) => {
+    const res = await fetch('https://jsonplaceholder.typicode.com/posts')
+    const posts = await res.json()
+    return posts
+})
+
+const postSlice = createSlice({
+    name: 'posts',
+    initialState,
+    reducers: {},
+    extraReducers(builder) {
+        builder.addCase(getPosts.pending, (state, action) => {
+            state.loading = true
+        }).addCase(getPosts.fulfilled, (state, { payload }) => {
+            state.loading = false
+            state.entities = payload
+        }).addCase(getPosts.rejected, (state, action) => {
+            state.loading = false
+        })
+    }
+
+})
+
+const postReducer = postSlice.reducer
+
+const appStore = configureStore({
+    reducer: {
+        posts: postReducer
+    }
+})
+function Post() {
+    const dispatch = useDispatch()
+    const { entities, loading } = useSelector((state) => state.posts)
+
+    useEffect(() => {
+        dispatch(getPosts())
+    }, [])
+
+    if (loading) return <Text style={styles.label}>Loading...</Text>
+
+    return (
+        <ScrollView>
+            <Text>Blog Posts</Text>
+            {entities.map((post) => (
+                <Text key={post.id}>{post.title}</Text>
+            ))}
+        </ScrollView>
+    )
+}
+
+function App() {
+    return <Provider store={appStore}>
+        <View style={styles.container}>
+            <Post />
+        </View>
+    </Provider>
+}
+
+export default App;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'pink',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    label: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'blue'
+    }
+})
+.....................................................................................
+			  ScrolView
+....................................................................................
+import { View, StyleSheet, Text, ScrollView } from "react-native";
+import { createSlice, createAsyncThunk, configureStore } from '@reduxjs/toolkit'
+import { Provider, useDispatch, useSelector } from 'react-redux'
+import { useEffect } from "react";
+
+const initialState = {
+    entities: [],
+    loading: false,
+
+}
+
+const getPosts = createAsyncThunk('posts/getPosts', async (thunkAPI) => {
+    const res = await fetch('https://jsonplaceholder.typicode.com/posts')
+    const posts = await res.json()
+    return posts
+})
+
+const postSlice = createSlice({
+    name: 'posts',
+    initialState,
+    reducers: {},
+    extraReducers(builder) {
+        builder.addCase(getPosts.pending, (state, action) => {
+            state.loading = true
+        }).addCase(getPosts.fulfilled, (state, { payload }) => {
+            state.loading = false
+            state.entities = payload
+        }).addCase(getPosts.rejected, (state, action) => {
+            state.loading = false
+        })
+    }
+
+})
+
+const postReducer = postSlice.reducer
+
+const appStore = configureStore({
+    reducer: {
+        posts: postReducer
+    }
+})
+function Post() {
+    const dispatch = useDispatch()
+    const { entities, loading } = useSelector((state) => state.posts)
+
+    useEffect(() => {
+        dispatch(getPosts())
+    }, [])
+
+    if (loading) return <Text style={styles.label}>Loading...</Text>
+
+    return (
+        <ScrollView style={{
+            marginLeft: 10,
+            marginTop: 10
+        }}>
+            <Text style={{ textAlign: 'center', fontSize: 25, fontWeight: 'bold', marginBottom: 10 }}>Blog Posts</Text>
+            {entities.map((post) => (
+                <Text key={post.id}>{post.title}</Text>
+            ))}
+        </ScrollView>
+    )
+}
+
+function App() {
+    return <Provider store={appStore}>
+        <View style={styles.container}>
+            <Post />
+        </View>
+    </Provider>
+}
+
+export default App;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'pink',
+        justifyContent: 'center',
+        padding: 10,
+        alignItems: 'center'
+    },
+    label: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'blue'
+    }
+})
+...................................................................................
+				List Views
+...................................................................................
+
+React Native provides a suit of components for presenting lists of data, Generally, You will want to use "FlatList or Section List"
+
+
+FlatList:
+ It displays a scrolling list of changining, but similary structured data.
+ FlatList works well for long list of data , where number of items change over time.
+ 
+When compare to ScrollView,The FlatList only renders elements that are currently s howing on the screen, not all the elements at onces.
+
+
+
+FlatList is similar to array.map in react.
+
+FlatList requires two properties:
+
+1.data
+  data Source
+2.renderItem
+  takes one item from the source and returns a formtted component to render.
+
+FlatList with HardCoded data.
+.............................
+<FlatList data={dataSource} renderItem={(obj)=>{
+  return<Text>{obj.item.dataSource.property}</Text>
+}}
+
+data->Data Prop is called datasource which is plain array
+renderItem -
+  Takes an item from data prop and renders it into list
+
+renderItem({
+ item:ItemObject(todo,contact),
+ index:number,
+ separators:{
+
+ }
+})
+
+import { View, StyleSheet, Text, ScrollView, FlatList } from "react-native";
+import { createSlice, createAsyncThunk, configureStore } from '@reduxjs/toolkit'
+import { Provider, useDispatch, useSelector } from 'react-redux'
+import { useEffect } from "react";
+
+const initialState = {
+    entities: [],
+    loading: false,
+}
+
+const getPosts = createAsyncThunk('posts/getPosts', async (thunkAPI) => {
+    const res = await fetch('https://jsonplaceholder.typicode.com/posts')
+    const posts = await res.json()
+    return posts
+})
+
+const postSlice = createSlice({
+    name: 'posts',
+    initialState,
+    reducers: {},
+    extraReducers(builder) {
+        builder.addCase(getPosts.pending, (state, action) => {
+            state.loading = true
+        }).addCase(getPosts.fulfilled, (state, { payload }) => {
+            state.loading = false
+            state.entities = payload
+        }).addCase(getPosts.rejected, (state, action) => {
+            state.loading = false
+        })
+    }
+
+})
+
+const postReducer = postSlice.reducer
+
+const appStore = configureStore({
+    reducer: {
+        posts: postReducer
+    }
+})
+function Post() {
+    const dispatch = useDispatch()
+    const { entities, loading } = useSelector((state) => state.posts)
+
+    useEffect(() => {
+        dispatch(getPosts())
+    }, [])
+
+    if (loading) return <Text style={styles.label}>Loading...</Text>
+
+    return <FlatList data={entities} keyExtractor={item => item.id} renderItem={(obj) => {
+        return <Text style={styles.label}>
+            {obj.item.title}
+        </Text>
+    }} />
+
+}
+
+function App() {
+    return <Provider store={appStore}>
+        <View style={styles.container}>
+            <Post />
+        </View>
+    </Provider>
+}
+
+export default App;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        padding: 10,
+        alignItems: 'center'
+    },
+    label: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'blue'
+    }
+})
+.....................................................................................
+			  Item selection in flat List
+
+import { View, StyleSheet, Text, ScrollView, FlatList, Alert } from "react-native";
+import { createSlice, createAsyncThunk, configureStore } from '@reduxjs/toolkit'
+import { Provider, useDispatch, useSelector } from 'react-redux'
+import { useEffect } from "react";
+
+const initialState = {
+    entities: [],
+    loading: false,
+}
+
+const getPosts = createAsyncThunk('posts/getPosts', async (thunkAPI) => {
+    const res = await fetch('https://jsonplaceholder.typicode.com/posts')
+    const posts = await res.json()
+    return posts
+})
+
+const postSlice = createSlice({
+    name: 'posts',
+    initialState,
+    reducers: {},
+    extraReducers(builder) {
+        builder.addCase(getPosts.pending, (state, action) => {
+            state.loading = true
+        }).addCase(getPosts.fulfilled, (state, { payload }) => {
+            state.loading = false
+            state.entities = payload
+        }).addCase(getPosts.rejected, (state, action) => {
+            state.loading = false
+        })
+    }
+
+})
+
+const postReducer = postSlice.reducer
+
+const appStore = configureStore({
+    reducer: {
+        posts: postReducer
+    }
+})
+function Post() {
+    const dispatch = useDispatch()
+    const { entities, loading } = useSelector((state) => state.posts)
+
+    useEffect(() => {
+        dispatch(getPosts())
+    }, [])
+
+    const onSelectItem = (item) => {
+        //show the item
+        console.log(item)
+        Alert.alert(item.title)
+    }
+
+    if (loading) return <Text style={styles.label}>Loading...</Text>
+
+    return <FlatList data={entities} keyExtractor={item => item.id} renderItem={(obj) => {
+        return <Text style={styles.label} onPress={() => {
+            onSelectItem(obj.item)
+        }}>
+            {obj.item.title}
+        </Text>
+    }} />
+
+}
+
+function App() {
+    return <Provider store={appStore}>
+        <View style={styles.container}>
+            <Post />
+        </View>
+    </Provider>
+}
+
+export default App;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        padding: 10,
+        alignItems: 'center'
+    },
+    label: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'blue'
+    }
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
