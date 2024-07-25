@@ -8,15 +8,8 @@ const Stack = createNativeStackNavigator()
 
 //Component- Screen
 const HomeScreen = props => {
-
-    const onMove=()=>{
-        //write logic to navigate from this screen into another screen(profile)
-        props.navigation.navigate("Profile")
-    }
-
     return <View style={styles.container}>
         <Text style={styles.label}>Home Screen</Text>
-        <Button title="Profile" onPress={onMove}/>
     </View>
 }
 const ProfileScreen = props => {
