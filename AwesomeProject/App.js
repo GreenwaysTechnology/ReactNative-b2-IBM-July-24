@@ -1,54 +1,99 @@
-import React, { useState } from 'react'
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native'
+import { StyleSheet, View, Text } from "react-native";
 
-
-//component to get input from the user
-const ReadText = props => {
-    const [value, setValue] = useState("Default text")
-    const [no, onChangeNumber] = useState(0)
-
-    return <>
-        <TextInput style={styles.input} value={value} onChangeText={setValue} />
-        <Button title='Read Text' onPress={() => {
-            Alert.alert(value)
-        }} />
-
-        <TextInput value={no} keyboardType="numeric" style={styles.input} placeholder='Type your no' onChangeText={onChangeNumber} />
-        <Button title='Read Text' onPress={() => {
-            Alert.alert(no.toString())
-        }} />
-    </>
-
-}
-
-
-function App() {
+const App = () => {
     return <View style={styles.container}>
-        <ReadText />
+        <Text style={styles.headerStyle}>Flex wrap</Text>
+        <View style={styles.elementsContainer}>
+            <View style={{ width: 50, height: 50, backgroundColor: 'red' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'green' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'green' }} />
+
+            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'green' }} />
+
+            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'green' }} />
+
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'white' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />
+
+
+        </ View>
     </View>
 }
-
 export default App;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+        flex: 1
     },
-    input: {
-        height: 40,
-        margin: 12,
-        borderWidth: 1,
-        padding: 10
-    },
-    text: {
-        color: 'white',
-        fontSize: 42,
-        lineHeight: 84,
-        fontWeight: 'bold',
+    headerStyle: {
+        fontSize: 29,
         textAlign: 'center',
-        backgroundColor: '#000000c0',
+        fontWeight: 'bold',
+        marginBottom: 24,
+        color: 'blue'
     },
-});
+    elementsContainer: {
+        flex: 1,
+        backgroundColor: 'black',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        rowGap: 10,
+        columnGap: 10,
+        justifyContent: 'center',
+        marginBottom: 24
+    }
+
+})
 
