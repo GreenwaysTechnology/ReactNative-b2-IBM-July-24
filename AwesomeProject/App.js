@@ -1,75 +1,31 @@
-import { View, StyleSheet, Text, ScrollView, FlatList, Alert } from "react-native";
-import { createSlice, createAsyncThunk, configureStore } from '@reduxjs/toolkit'
-import { Provider, useDispatch, useSelector } from 'react-redux'
-import { useEffect } from "react";
+import React, { useState } from 'react'
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native'
 
-const initialState = {
-    entities: [],
-    loading: false,
-}
 
-const getPosts = createAsyncThunk('posts/getPosts', async (thunkAPI) => {
-    const res = await fetch('https://jsonplaceholder.typicode.com/posts')
-    const posts = await res.json()
-    return posts
-})
+//component to get input from the user
+const ReadText = props => {
+    const [value, setValue] = useState("Default text")
+    const [no, onChangeNumber] = useState(0)
 
-const postSlice = createSlice({
-    name: 'posts',
-    initialState,
-    reducers: {},
-    extraReducers(builder) {
-        builder.addCase(getPosts.pending, (state, action) => {
-            state.loading = true
-        }).addCase(getPosts.fulfilled, (state, { payload }) => {
-            state.loading = false
-            state.entities = payload
-        }).addCase(getPosts.rejected, (state, action) => {
-            state.loading = false
-        })
-    }
+    return <>
+        <TextInput style={styles.input} value={value} onChangeText={setValue} />
+        <Button title='Read Text' onPress={() => {
+            Alert.alert(value)
+        }} />
 
-})
-
-const postReducer = postSlice.reducer
-
-const appStore = configureStore({
-    reducer: {
-        posts: postReducer
-    }
-})
-function Post() {
-    const dispatch = useDispatch()
-    const { entities, loading } = useSelector((state) => state.posts)
-
-    useEffect(() => {
-        dispatch(getPosts())
-    }, [])
-
-    const onSelectItem = (item) => {
-        //show the item
-        console.log(item)
-        Alert.alert(item.title)
-    }
-
-    if (loading) return <Text style={styles.label}>Loading...</Text>
-
-    return <FlatList data={entities} keyExtractor={item => item.id} renderItem={(obj) => {
-        return <Text style={styles.label} onPress={() => {
-            onSelectItem(obj.item)
-        }}>
-            {obj.item.title}
-        </Text>
-    }} />
+        <TextInput value={no} keyboardType="numeric" style={styles.input} placeholder='Type your no' onChangeText={onChangeNumber} />
+        <Button title='Read Text' onPress={() => {
+            Alert.alert(no.toString())
+        }} />
+    </>
 
 }
+
 
 function App() {
-    return <Provider store={appStore}>
-        <View style={styles.container}>
-            <Post />
-        </View>
-    </Provider>
+    return <View style={styles.container}>
+        <ReadText />
+    </View>
 }
 
 export default App;
@@ -78,12 +34,21 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        padding: 10,
         alignItems: 'center'
     },
-    label: {
-        fontSize: 20,
+    input: {
+        height: 40,
+        margin: 12,
+        borderWidth: 1,
+        padding: 10
+    },
+    text: {
+        color: 'white',
+        fontSize: 42,
+        lineHeight: 84,
         fontWeight: 'bold',
-        color: 'blue'
-    }
-})
+        textAlign: 'center',
+        backgroundColor: '#000000c0',
+    },
+});
+
