@@ -1,55 +1,37 @@
-import { View, StyleSheet, Text, Button } from "react-native";
+import 'react-native-gesture-handler';
+
+import {View} from "react-native"
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";//create 
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { Text } from 'react-native-paper';
 
-//screen navigation: screen to screen.
-//Create Stack Object
-const Stack = createNativeStackNavigator()
+const Drawer = createDrawerNavigator();
 
-//Component- Screen
-const HomeScreen = props => {
-
-    const onMove=()=>{
-        //write logic to navigate from this screen into another screen(profile)
-        props.navigation.navigate("Profile")
-    }
-
-    return <View style={styles.container}>
-        <Text style={styles.label}>Home Screen</Text>
-        <Button title="Profile" onPress={onMove}/>
-    </View>
-}
-const ProfileScreen = props => {
-    return <View style={styles.container}>
-        <Text style={styles.label}>Profile Screen</Text>
+const Feed = () => {
+    return <View style={{ flex: 1 }}>
+        <Text>Feed </Text>
     </View>
 }
 
-
+const Article = () => {
+    return <View style={{ flex: 1 }}>
+        <Text>Article </Text>
+    </View>
+}
+function MyDrawer() {
+    return (
+        <Drawer.Navigator>
+            <Drawer.Screen name="Feed" component={Feed} />
+            <Drawer.Screen name="Article" component={Article} />
+        </Drawer.Navigator>
+    );
+}
 function App() {
     return <NavigationContainer>
-        {/* Stack Navigation */}
-        <Stack.Navigator>
-            {/* List of Screen */}
-            <Stack.Screen name="Home" component={HomeScreen} />
-            <Stack.Screen name="Profile" component={ProfileScreen} />
-        </Stack.Navigator>
+        <MyDrawer />
+
     </NavigationContainer>
+
 }
 
 export default App;
-
-//styles
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'pink',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    label: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: 'blue'
-    }
-})

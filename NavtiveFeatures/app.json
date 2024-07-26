@@ -1,0 +1,14 @@
+{
+  "name": "NativeFeatures",
+  "displayName": "NativeFeatures",
+  "expo": {
+    "plugins": [
+      [
+        "expo-location",
+        "expo-av",
+        "expo-filesystem",
+        "expo-sharing"
+      ]
+    ]
+  }
+}

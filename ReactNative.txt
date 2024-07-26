@@ -2718,4 +2718,1251 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     }
 })
+.....................................................................................
+			Passing parameters screen to screen
+.....................................................................................
+import { View, StyleSheet, Text, Button } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";//create 
+
+//screen navigation: screen to screen.
+//Create Stack Object
+const Stack = createNativeStackNavigator()
+
+//Component- Screen
+const HomeScreen = props => {
+
+    const onMove = () => {
+        //write logic to navigate from this screen into another screen(profile)
+        props.navigation.navigate("Profile", { id: 1, name: 'Subramanian' })
+    }
+
+    return <View style={styles.container}>
+        <Text style={styles.label}>Home Screen</Text>
+        <Button title="Profile" onPress={onMove} />
+    </View>
+}
+const ProfileScreen = props => {
+    const profile = props.route.params
+    return <View style={styles.container}>
+        <Text style={styles.label}>Profile Screen</Text>
+        <Text style={styles.label}>{profile.id} {profile.name}</Text>
+    </View>
+}
+
+
+function App() {
+    return <NavigationContainer>
+        {/* Stack Navigation */}
+        <Stack.Navigator>
+            {/* List of Screen */}
+            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="Profile" component={ProfileScreen} />
+        </Stack.Navigator>
+    </NavigationContainer>
+}
+
+export default App;
+
+//styles
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'pink',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    label: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'blue'
+    }
+})
+.....................................................................................
+			Master details page- web service integration
+....................................................................................
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { StyleSheet, View, Text, Button, TouchableHighlight, FlatList, ActivityIndicator } from 'react-native'
+import { useState, useEffect } from "react";
+
+const Stack = createNativeStackNavigator();
+
+const Error = props => {
+    return <>
+        <Text>{props.error}</Text>
+    </>
+}
+
+const Spinner = props => {
+    return <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+        <ActivityIndicator size='large' color="#0000ff" />
+    </View>
+}
+
+const Posts = props => {
+    let initalState = {
+        isLoaded: false,
+        items: [],
+        error: null
+    }
+    const [posts, setPosts] = useState(initalState)
+
+    async function fetchPosts() {
+        try {
+            const url = 'https://jsonplaceholder.typicode.com/posts'
+            const values = await (await fetch(url)).json()
+            setPosts({ ...posts, isLoaded: true, items: posts.items.concat(values) })
+        }
+        catch (err) {
+            setPosts({ ...posts, isLoaded: true, error: err })
+        }
+    }
+    //useEffect : ComponentDidMount 
+    useEffect(() => {
+        setTimeout(() => {
+            fetchPosts()
+        }, 5000)
+    }, [])
+
+    const onSelect = (item) => {
+        props.navigation.navigate('PostsDetails', item)
+    }
+
+    const { error, isLoaded, items } = posts
+    if (error) {
+        return <Error error={error} />
+    } else if (!isLoaded) {
+        return <Spinner />
+    } else {
+        return <FlatList
+            data={items}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => {
+                return <TouchableHighlight activeOpacity={0.4} underlayColor='yellow' onPress={() => { onSelect(item) }} >
+                    <View>
+                        <Text style={styles.item}>{item.title}</Text>
+                    </View>
+                </TouchableHighlight>
+            }}
+        />
+    }
+
+}
+
+//Screens 
+//Screens 
+const HomeScreen = props => {
+    const { navigation: { navigate } } = props
+    const onMove = () => {
+        navigate('Posts')
+    }
+    return <View style={styles.container}>
+        <Text style={{
+            fontSize: 40,
+        }}>Home Screen</Text>
+        <Button title="Posts" onPress={onMove} />
+    </View>
+}
+
+const PostScreen = props => {
+    return <>
+        <Posts navigation={props.navigation} />
+    </>
+}
+
+const PostsDetailScreen = props => {
+    const { title, body } = props.route.params
+    return <View style={styles.container}>
+        <Text style={{ fontSize: 25, color: 'blue' }}>{title}</Text>
+        <Text style={{ fontSize: 20, color: 'red' }}>{body}</Text>
+    </View>
+}
+
+const App = props => {
+    return <NavigationContainer>
+        <Stack.Navigator>
+            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="Posts" component={PostScreen} />
+            <Stack.Screen name="PostsDetails" component={PostsDetailScreen} />
+        </Stack.Navigator>
+    </NavigationContainer>
+}
+export default App;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'lightblue',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    item: {
+        padding: 10,
+        fontSize: 18,
+        height: 44,
+        fontWeight: 'bold',
+        color: '#000'
+
+    },
+    text: {
+        fontSize: 30,
+        textAlign: 'center',
+        color: '#000'
+    }
+})
+.....................................................................................
+
+.....................................................................................				Configuring the Header Bar
+....................................................................................
+
+Header Title:
+ By default header title is name of the Route
+
+
+ <Stack.Screen name="Home" component={Home} />
+
+How to override the default Header title?
+
+   <Stack.Screen options={{title:'My Personal Diary'}} name="Home" component={Home} />
+
+How to update header dynamically based on some props?
+
+<Stack.Screen name="Profile" options={(navigation)=>{
+   return {
+	title:navigation.route.params.name || 'Your Header'
+   }
+}} component={Profile} />
+
+eg:
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { StyleSheet, View, Text, Button, TouchableHighlight, FlatList, ActivityIndicator } from 'react-native'
+import { useState, useEffect } from "react";
+
+const Stack = createNativeStackNavigator();
+
+const Error = props => {
+    return <>
+        <Text>{props.error}</Text>
+    </>
+}
+const Spinner = props => {
+    return <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+        <ActivityIndicator size='large' color="#0000ff" />
+    </View>
+}
+
+const Posts = props => {
+    let initalState = {
+        isLoaded: false,
+        items: [],
+        error: null
+    }
+    const [posts, setPosts] = useState(initalState)
+
+    async function fetchPosts() {
+        try {
+            const url = 'https://jsonplaceholder.typicode.com/posts'
+            const values = await (await fetch(url)).json()
+            setPosts({ ...posts, isLoaded: true, items: posts.items.concat(values) })
+        }
+        catch (err) {
+            setPosts({ ...posts, isLoaded: true, error: err })
+        }
+    }
+    //useEffect : ComponentDidMount 
+    useEffect(() => {
+        setTimeout(() => {
+            fetchPosts()
+        }, 5000)
+    }, [])
+
+    const onSelect = (item) => {
+        props.navigation.navigate('PostsDetails', item)
+    }
+
+    const { error, isLoaded, items } = posts
+    if (error) {
+        return <Error error={error} />
+    } else if (!isLoaded) {
+        return <Spinner />
+    } else {
+        return <FlatList
+            data={items}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => {
+                return <TouchableHighlight activeOpacity={0.4} underlayColor='yellow' onPress={() => { onSelect(item) }} >
+                    <View>
+                        <Text style={styles.item}>{item.title}</Text>
+                    </View>
+                </TouchableHighlight>
+            }}
+        />
+    }
+
+}
+
+//Screens 
+//Screens 
+const HomeScreen = props => {
+    const { navigation: { navigate } } = props
+    const onMove = () => {
+        navigate('Posts')
+    }
+    return <View style={styles.container}>
+        <Text style={{
+            fontSize: 40,
+        }}>Home Screen</Text>
+        <Button title="Posts" onPress={onMove} />
+    </View>
+}
+
+const PostScreen = props => {
+    return <>
+        <Posts navigation={props.navigation} />
+    </>
+}
+
+const PostsDetailScreen = props => {
+    const { title, body } = props.route.params
+    return <View style={styles.container}>
+        <Text style={{ fontSize: 25, color: 'blue' }}>{title}</Text>
+        <Text style={{ fontSize: 20, color: 'red' }}>{body}</Text>
+    </View>
+}
+
+const App = props => {
+    return <NavigationContainer>
+        <Stack.Navigator>
+            <Stack.Screen options={{ title: 'MyHome' }} name="Home" component={HomeScreen} />
+            <Stack.Screen name="Posts" component={PostScreen} />
+            <Stack.Screen options={(navigation) => {
+
+                //return screen object 
+                return {
+                    title: navigation.route.params.title || 'Profile Details'
+                }
+
+            }} name="PostsDetails" component={PostsDetailScreen} />
+        </Stack.Navigator>
+    </NavigationContainer>
+}
+export default App;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'lightblue',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    item: {
+        padding: 10,
+        fontSize: 18,
+        height: 44,
+        fontWeight: 'bold',
+        color: '#000'
+
+    },
+    text: {
+        fontSize: 30,
+        textAlign: 'center',
+        color: '#000'
+    }
+})
+....................................................................................
+				Header styles
+....................................................................................
+
+
+There are three key properties to use when customizing the style of your header: headerStyle, headerTintColor, and headerTitleStyle.
+
+headerStyle: a style object that will be applied to the View that wraps the header. If you set backgroundColor on it, that will be the color of your header.
+
+headerTintColor: the back button and title both use this property as their color.
+
+headerTitleStyle: if we want to customize the fontFamily, fontWeight and other Text 
+Style properties for the title, we can use this to do it.
+
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { StyleSheet, View, Text, Button, TouchableHighlight, FlatList, ActivityIndicator } from 'react-native'
+import { useState, useEffect } from "react";
+
+const Stack = createNativeStackNavigator();
+
+const Error = props => {
+    return <>
+        <Text>{props.error}</Text>
+    </>
+}
+const Spinner = props => {
+    return <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+        <ActivityIndicator size='large' color="#0000ff" />
+    </View>
+}
+
+const Posts = props => {
+    let initalState = {
+        isLoaded: false,
+        items: [],
+        error: null
+    }
+    const [posts, setPosts] = useState(initalState)
+
+    async function fetchPosts() {
+        try {
+            const url = 'https://jsonplaceholder.typicode.com/posts'
+            const values = await (await fetch(url)).json()
+            setPosts({ ...posts, isLoaded: true, items: posts.items.concat(values) })
+        }
+        catch (err) {
+            setPosts({ ...posts, isLoaded: true, error: err })
+        }
+    }
+    //useEffect : ComponentDidMount 
+    useEffect(() => {
+        setTimeout(() => {
+            fetchPosts()
+        }, 5000)
+    }, [])
+
+    const onSelect = (item) => {
+        props.navigation.navigate('PostsDetails', item)
+    }
+
+    const { error, isLoaded, items } = posts
+    if (error) {
+        return <Error error={error} />
+    } else if (!isLoaded) {
+        return <Spinner />
+    } else {
+        return <FlatList
+            data={items}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => {
+                return <TouchableHighlight activeOpacity={0.4} underlayColor='yellow' onPress={() => { onSelect(item) }} >
+                    <View>
+                        <Text style={styles.item}>{item.title}</Text>
+                    </View>
+                </TouchableHighlight>
+            }}
+        />
+    }
+
+}
+
+//Screens 
+//Screens 
+const HomeScreen = props => {
+    const { navigation: { navigate } } = props
+    const onMove = () => {
+        navigate('Posts')
+    }
+    return <View style={styles.container}>
+        <Text style={{
+            fontSize: 40,
+        }}>Home Screen</Text>
+        <Button title="Posts" onPress={onMove} />
+    </View>
+}
+
+const PostScreen = props => {
+    return <>
+        <Posts navigation={props.navigation} />
+    </>
+}
+
+const PostsDetailScreen = props => {
+    const { title, body } = props.route.params
+    return <View style={styles.container}>
+        <Text style={{ fontSize: 25, color: 'blue' }}>{title}</Text>
+        <Text style={{ fontSize: 20, color: 'red' }}>{body}</Text>
+    </View>
+}
+
+const App = props => {
+    return <NavigationContainer>
+        <Stack.Navigator>
+            <Stack.Screen options={{
+                title: 'MyHome', headerStyle: {
+                    backgroundColor: 'light blue'
+                }
+            }} name="Home" component={HomeScreen} />
+            <Stack.Screen name="Posts" component={PostScreen} />
+            <Stack.Screen options={(navigation) => {
+                //return options  object 
+                return {
+                    title: navigation.route.params.title || 'Profile Details',
+                    headerStyle: {
+                        backgroundColor: 'pink'
+                    },
+                    headerTintColor: 'blue',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                        fontFamily: 'fantasy'
+                    }
+                }
+
+            }} name="PostsDetails" component={PostsDetailScreen} />
+        </Stack.Navigator>
+    </NavigationContainer>
+}
+export default App;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'lightblue',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    item: {
+        padding: 10,
+        fontSize: 18,
+        height: 44,
+        fontWeight: 'bold',
+        color: '#000'
+
+    },
+    text: {
+        fontSize: 30,
+        textAlign: 'center',
+        color: '#000'
+    }
+})
+
+....................................................................................
+			 Screen Options vs options and Header Button
+....................................................................................
+
+Suppose i want to share common style for all screens,Screen options are used to set common styles for all screens.
+
+       <Stack.Navigator screenOptions={{
+            headerStyle: {
+                backgroundColor: '#f4511e'
+            },
+            headerTintColor: 'blue',
+            headerTitleStyle: {
+                fontWeight: 'bold'
+            }
+        }}>
+
+
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { StyleSheet, View, Text, Button, TouchableHighlight, FlatList, ActivityIndicator, Alert } from 'react-native'
+import { useState, useEffect } from "react";
+
+
+//create Stack Object
+const Stack = createNativeStackNavigator();
+
+
+const Error = props => {
+    return <>
+        <Text>{props.error}</Text>
+    </>
+}
+const Spinner = props => {
+    return <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+        <ActivityIndicator size='large' color="#0000ff" />
+    </View>
+}
+const Posts = props => {
+    let initalState = {
+        isLoaded: false,
+        items: [],
+        error: null
+    }
+    const [posts, setPosts] = useState(initalState)
+
+    console.log('Posts props')
+    console.log(props)
+
+    async function fetchPosts() {
+        try {
+            const url = 'https://jsonplaceholder.typicode.com/posts'
+            const values = await (await fetch(url)).json()
+            setPosts({ ...posts, isLoaded: true, items: posts.items.concat(values) })
+        }
+        catch (err) {
+            setPosts({ ...posts, isLoaded: true, error: err })
+        }
+    }
+    //useEffect : ComponentDidMount 
+    useEffect(() => {
+        setTimeout(() => {
+            fetchPosts()
+        }, 5000)
+    }, [])
+
+    const onSelect = (item) => {
+        props.navigation.navigate('PostsDetails', item)
+    }
+
+    const { error, isLoaded, items } = posts
+    if (error) {
+        return <Error error={error} />
+    } else if (!isLoaded) {
+        return <Spinner />
+    } else {
+        return <FlatList
+            data={items}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => {
+                return <TouchableHighlight activeOpacity={0.4} underlayColor='yellow' onPress={() => { onSelect(item) }} >
+                    <View>
+                        <Text style={styles.item}>{item.title}</Text>
+                    </View>
+                </TouchableHighlight>
+            }}
+        />
+    }
+
+}
+
+
+
+
+//Screens 
+const HomeScreen = props => {
+    // const { navigation: { navigate } } = props
+    // const onMove = () => {
+    //     navigate('Posts')
+    // }
+    return <View style={styles.container}>
+        <Text style={{
+            fontSize: 40,
+        }}>Home Screen</Text>
+        {/* <Button title="Posts" onPress={onMove} /> */}
+    </View>
+}
+const PostScreen = props => {
+    return <>
+        <Posts navigation={props.navigation} />
+    </>
+}
+
+const PostsDetailScreen = props => {
+
+    const { title, body } = props.route.params
+
+    return <View style={styles.container}>
+        <Text style={{ fontSize: 25, color: 'blue' }}>{title}</Text>
+        <Text style={{ fontSize: 20, color: 'red' }}>{body}</Text>
+    </View>
+}
+
+
+
+const App = props => {
+    return <NavigationContainer>
+        <Stack.Navigator screenOptions={{
+            headerStyle: {
+                backgroundColor: '#f4511e'
+            },
+            headerTintColor: 'blue',
+            headerTitleStyle: {
+                fontWeight: 'bold'
+            }
+        }}>
+            <Stack.Screen options={(navigation) => {
+                console.log('inside navigation')
+                console.log(navigation)
+                const onMove = () => {
+                    Alert.alert('clicked')
+                    //navigation.navigate('Posts')
+                }
+                return {
+                    title: 'My Posts App',
+                    headerRight: () => {
+                        return <Button title="Posts" onPress={onMove} />
+                    }
+                }
+            }} name="Home" component={HomeScreen} />
+            <Stack.Screen name="Posts" component={PostScreen} />
+            <Stack.Screen options={(navigation) => {
+                return {
+                    title: navigation.route.params.title || 'Your Blog',
+                    headerTintColor: 'blue',
+                    headerTitleStyle: {
+                        fontWeight: 'bold'
+                    }
+                }
+            }} name="PostsDetails" component={PostsDetailScreen} />
+        </Stack.Navigator>
+    </NavigationContainer>
+}
+
+
+export default App;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'lightblue',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    item: {
+        padding: 10,
+        fontSize: 18,
+        height: 44,
+        fontWeight: 'bold',
+        color: '#000'
+
+    },
+    text: {
+        fontSize: 30,
+        textAlign: 'center',
+        color: '#000'
+    }
+})
+....................................................................................
+			  Tab Navigation
+...................................................................................
+
+Tab Naviation:
+
+Types of Tabs
+1.TopTab
+2.BottomTab
+3.MaterialBottomTab | MaterialTopTab
+
+npm i @react-navigation/material-top-tabs
+npm i @react-navigation/bottom-tabs
+npm i @react-navigation/material-bottom-tabs
+
+npm i react-native-pager-view
+
+
+Material Top tab Navigation:
+
+import { NavigationContainer } from "@react-navigation/native";
+import { View, StyleSheet, Text } from 'react-native'
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+
+const Tab = createMaterialTopTabNavigator();
+
+const FeedScreen = () => {
+    return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>FeedScreen</Text>
+    </View>
+}
+const NotificationsScreen = () => {
+    return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>NotificationsScreen</Text>
+    </View>
+}
+const ProfileScreen = () => {
+    return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>ProfileScreen</Text>
+    </View>
+}
+function MyTabs() {
+    return <Tab.Navigator initialRouteName="Feed" screenOptions={{
+        tabBarActiveTintColor: '#e91e63',
+        tabBarLabelStyle: {
+            fontSize: 12,
+            fontWeight: 'bold',
+        },
+        tabBarStyle: {
+            backgroundColor: 'powderblue'
+        }
+    }}>
+        <Tab.Screen name="Feed" component={FeedScreen} />
+        <Tab.Screen name="Notifications" component={NotificationsScreen} />
+        <Tab.Screen name="Profile" component={ProfileScreen} />
+    </Tab.Navigator>
+}
+
+function App() {
+    return <NavigationContainer>
+        <MyTabs />
+    </NavigationContainer>
+}
+
+export default App;
+....................................................................................
+Material Bottom Tab Navigation:
+.....................................................................................
+
+import { NavigationContainer } from "@react-navigation/native";
+import { View, Text } from 'react-native'
+import { createMaterialBottomTabNavigator } from 'react-native-paper/react-navigation';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+
+const Tab = createMaterialBottomTabNavigator();
+
+const FeedScreen = () => {
+    return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>FeedScreen</Text>
+    </View>
+}
+const NotificationsScreen = () => {
+    return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>NotificationsScreen</Text>
+    </View>
+}
+const ProfileScreen = () => {
+    return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>ProfileScreen</Text>
+    </View>
+}
+
+function MyTabs() {
+    return (
+        <Tab.Navigator>
+            <Tab.Screen name="Feed" component={FeedScreen} options={{
+                tabBarLabel: 'Feed',
+                tabBarIcon: ({ color }) => (
+                    <MaterialCommunityIcons name="home" color={color} size={26} />
+                ),
+            }} />
+            <Tab.Screen name="Notification" component={NotificationsScreen} />
+            <Tab.Screen name="Profiles" component={ProfileScreen} />
+        </Tab.Navigator>
+    );
+}
+
+
+function App() {
+    return <SafeAreaProvider>
+        <NavigationContainer>
+            <MyTabs />
+        </NavigationContainer>
+    </SafeAreaProvider>
+}
+
+export default App;
+
+....................................................................................
+				Tab + Stack Navigation
+...................................................................................
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View, Text, StyleSheet, Button } from 'react-native';
+import { createMaterialBottomTabNavigator } from 'react-native-paper/react-navigation';
+//create tab:
+const Tab = createMaterialBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+
+
+const Messages = props => {
+    const { navigation } = props;
+    return <View style={styles.container}>
+        <Text>Messages Screen</Text>
+        <Button title="go to Settions" onPress={() => {
+            navigation.navigate('Settings')
+        }} />
+    </View>
+}
+const Feed = props => {
+    return <View style={styles.container}>
+        <Text>Feed Screen</Text>
+    </View>
+}
+const Settings = props => {
+    return <View style={styles.container}>
+        <Text>Settings Screen</Text>
+    </View>
+}
+const Home = props => {
+    return <Tab.Navigator>
+        <Tab.Screen name="Messages" component={Messages} />
+        <Tab.Screen name="Feed" component={Feed} />
+    </Tab.Navigator>
+}
+
+function App() {
+    return <NavigationContainer>
+        <Stack.Navigator>
+            <Stack.Screen
+                name="Home"
+                component={Home}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen name="Settings" component={Settings} />
+        </Stack.Navigator>
+    </NavigationContainer>
+
+}
+
+export default App;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+.....................................................................................
+
+import 'react-native-gesture-handler';
+
+import {View} from "react-native"
+import { NavigationContainer } from "@react-navigation/native";
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { Text } from 'react-native-paper';
+
+const Drawer = createDrawerNavigator();
+
+const Feed = () => {
+    return <View style={{ flex: 1 }}>
+        <Text>Feed </Text>
+    </View>
+}
+
+const Article = () => {
+    return <View style={{ flex: 1 }}>
+        <Text>Article </Text>
+    </View>
+}
+function MyDrawer() {
+    return (
+        <Drawer.Navigator>
+            <Drawer.Screen name="Feed" component={Feed} />
+            <Drawer.Screen name="Article" component={Article} />
+        </Drawer.Navigator>
+    );
+}
+function App() {
+    return <NavigationContainer>
+        <MyDrawer />
+
+    </NavigationContainer>
+
+}
+
+export default App;
+.....................................................................................
+			    Device features
+.....................................................................................
+
+React Native core does not have any component or api to talk with device features
+such as location,camera,network etc...
+
+We have to go with third party libs
+
+1.https://reactnative.directory/
+
+2.Expo Framework.
+
+Expo framwork offers most of the device specific components and apis.
+
+if you want to use expo components inside react native cli based projects are not stright forward.
+we need to lot of configuration.
+
+
+Porject Work flow:
+...................
+
+I am going to integrate expo components into react native cli project.
+
+Expo Location
+     A library that provides access to reading geolocation information, polling current location or subscribing location update events from the device.
+
+Steps:
+1.create react native project using native cli.
+
+https://docs.expo.dev/bare/installing-expo-modules/
+
+2.Installing expo modules into bare react native project
+
+1.Automatic installation
+   It is suitable for only mac operating system
+
+2.Manual installation
+   It is suitable for windows work flow.
+
+Windows:
+
+2.1.npm install expo
+
+Configuration for Android:
+
+android/src/main/java/com/myapp/MainActivity.kt
+
+package com.myapp
+import expo.modules.ReactActivityDelegateWrapper
+import com.facebook.react.ReactActivity
+import com.facebook.react.ReactActivityDelegate
+   * which allows you to enable New Architecture with a single boolean flags [fabricEnabled]
+   */
+  override fun createReactActivityDelegate(): ReactActivityDelegate =
+     
+      ReactActivityDelegateWrapper(this, BuildConfig.IS_NEW_ARCHITECTURE_ENABLED, DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled))
+}
+
+Note:
+ MainApplication.kt file we dont need to configure, the reason, latest reactive native project does internally.
+
+android/settings.gradle.
+
+apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
+include ':app'
+includeBuild('../node_modules/@react-native/gradle-plugin')
+ 
+apply from: new File(["node", "--print", "require.resolve('expo/package.json')"].execute(null, rootDir).text.trim(), "../scripts/autolinking.gradle")
+useExpoModules()
+
+
+Metro configuration
+
+metro.config.js
+
+const { getDefaultConfig } = require('expo/metro-config');
+const { mergeConfig } = require('@react-native/metro-config');
+
+
+android/build.gradle
+
+    // Bundle with Expo CLI
+    entryFile = file(["node", "-e", "require('expo/scripts/resolveAppEntry')", rootDir.getAbsoluteFile().getParentFile().getAbsolutePath(), "android", "absolute"].execute(null, rootDir).text.trim())
+    cliFile = new File(["node", "--print", "require.resolve('@expo/cli')"].execute(null, rootDir).text.trim())
+    bundleCommand = "export:embed"
+}
+...................................................................................
+				Expo Location
+...................................................................................
+
+Steps:
+
+1.npx expo install expo-location
+
+2.Adding permission in app.json
+{
+  "name": "NativeFeatures",
+  "displayName": "NativeFeatures",
+  "expo": {
+    "plugins": [
+      [
+        "expo-location"
+      ]
+    ]
+  }
+}
+
+3.Coding
+import { Image, StyleSheet, Platform, View, Text } from 'react-native';
+import * as Location from 'expo-location'
+import { useEffect, useState } from 'react';
+
+const MyLocation = () => {
+    const [location, setLocation] = useState(null)
+    const [errorMsg, setErrorMsg] = useState(null)
+
+    //write code to get current locaiton
+    async function getLocation() {
+        //request device permisison
+        const { status } = await Location.requestForegroundPermissionsAsync()
+        if (status !== 'granted') {
+            setErrorMsg("Permission Denined to access location")
+            return
+        }
+        let location = await Location.getCurrentPositionAsync({})
+        setLocation(location)
+
+    }
+
+    useEffect(() => {
+        getLocation()
+    }, [])
+
+    let text = 'Location is loading...'
+
+    if (errorMsg) {
+        text = errorMsg
+    } else if (location) {
+        text = JSON.stringify(location)
+    }
+    return <View>
+        <Text style={{ fontSize: 20, color: 'blue' }}>{text}</Text>
+    </View>
+
+}
+
+
+function App() {
+    return <View style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }}>
+        <MyLocation></MyLocation>
+    </View>
+}
+
+export default App;
+...................................................................................
+			 Expo -Video + audio
+...................................................................................
+
+.....................................................................................
+			  Expo-Av : video +audio
+
+
+install expo-av
+
+npx expo install expo-av
+
+
+app.json
+   "expo": {
+      "plugins": [
+        "expo-location",
+        "expo-av"
+      ]
+    },
+
+useRef:
+ useRef is a React Hook that lets you reference a value that’s not needed for rendering.
+
+In React how to refer dom element?
+
+For eg i have text box i need to refer text box inside code
+<text onInput={onGet}>
+
+=>Inside event listener
+
+const onGet = evt=>{ 
+  let textbox=evt.target 
+} 
+
+here textbox is just variable holds text element inside event listener.
+now we can access all properties of text box like value....
+
+=>Using traditional ref variable
+
+ <input ref={myRef} />
+
+=>Using reference -useRef
+
+Without event object , you can access text box value 
+ 
+const inputRef = useRef(initialValue)
+
+<input ref={inputRef} />;
+
+
+//Video player and audio.
+
+import { Video } from 'expo-av';
+import { useRef, useState, useEffect } from 'react'
+import { Button, View ,StyleSheet } from 'react-native';
+
+function App() {
+    const video = useRef(null)
+    const [status, setStatus] = useState({})
+
+    return <View style={styles.container}>
+        <Video
+            ref={video}
+            style={styles.video}
+            source={{
+                uri: 'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
+            }}
+            useNativeControls
+            resizeMode='contain'
+            isLooping
+            onPlaybackStatusUpdate={status => setStatus(() => status)}
+        />
+        <View>
+            <Button title={status.isPlaying ? 'Pause' : 'Play'} onPress={()=>{
+                status.isPlaying ? video.current.pauseAsync() : video.current.playAsync()
+            }}/>
+        </View>
+    </View>
+
+}
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    buttons: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    video: {
+        alignSelf: 'center',
+        width: 320,
+        height: 200
+    }
+});
+export default App;
+
+...................................................................................
+				File System
+....................................................................................
+
+npx expo install  expo-file-system
+npx expo install expo-sharing
+
+app.json
+   "expo": {
+      "plugins": [
+        "expo-location",
+        "expo-av",
+        "expo-filesystem",
+        "expo-sharing"
+      ]
+    }
+
+import { StyleSheet, Button, View, Platform } from 'react-native';
+import * as FileSystem from 'expo-file-system';
+import { shareAsync } from 'expo-sharing';
+
+export default function App() {
+    const downloadFromUrl = async () => {
+        const filename = "small.mp4";
+        const result = await FileSystem.downloadAsync(
+            'http://techslides.com/demos/sample-videos/small.mp4',
+            FileSystem.documentDirectory + filename
+        );
+        console.log(result);
+
+        save(result.uri, filename, result.headers["Content-Type"]);
+    };
+
+
+
+    const save = async (uri, filename, mimetype) => {
+        if (Platform.OS === "android") {
+            const permissions = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+            if (permissions.granted) {
+                const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+                await FileSystem.StorageAccessFramework.createFileAsync(permissions.directoryUri, filename, mimetype)
+                    .then(async (uri) => {
+                        await FileSystem.writeAsStringAsync(uri, base64, { encoding: FileSystem.EncodingType.Base64 });
+                    })
+                    .catch(e => console.log(e));
+            } else {
+                shareAsync(uri);
+            }
+        } else {
+            shareAsync(uri);
+        }
+    };
+
+    return (
+        <View style={styles.container}>
+            <Button title="Download From URL" onPress={downloadFromUrl} />
+        </View>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
 
